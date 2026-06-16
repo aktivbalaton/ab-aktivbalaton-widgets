@@ -1,0 +1,800 @@
+/* ==========================================================
+   AktívBalaton – Widgets Pack CSS  v1.0.0
+   Tartalmazza:
+     1. Hero Statisztikák
+     2. Esemény Grid
+     3. Kategória Pillek
+   ========================================================== */
+
+/* ============================================================
+   1. HERO STATISZTIKÁK
+   ============================================================ */
+.ab-hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+}
+
+.ab-stat {
+    text-align: center;
+}
+
+.ab-stat-num {
+    display: block;
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+}
+
+.ab-stat-label {
+    display: block;
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.5px;
+    margin-top: 6px;
+}
+
+.ab-stat-divider {
+    width: 1px;
+    height: 44px;
+    background: rgba(255,255,255,0.25);
+    flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+    .ab-hero-stats     { gap: 24px; }
+    .ab-stat-divider   { height: 36px; }
+    .ab-stat-num       { font-size: 28px; }
+}
+
+
+/* ============================================================
+   2. ESEMÉNY GRID
+   ============================================================ */
+.ab-events-grid-wrapper {
+    --ab-grid-accent:  #1A6EA3;
+    --ab-grid-today:   #EF4444;
+    --ab-grid-radius:  16px;
+    --ab-grid-gap:     20px;
+    --ab-grid-shadow:  0 2px 16px rgba(12,74,110,0.09);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Fejléc */
+.ab-grid-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.ab-grid-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ab-grid-accent);
+    margin-bottom: 6px;
+}
+
+.ab-grid-section-title {
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 600;
+    color: #1C2B3A;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.ab-grid-view-all {
+    color: var(--ab-grid-accent);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 0.2s ease;
+    white-space: nowrap;
+}
+
+.ab-grid-view-all:hover { gap: 8px; }
+
+/* Grid layout – 3 oszlop: 1 nagy + 2×2 */
+.ab-events-grid {
+    display: grid;
+    grid-template-columns: 1.65fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: var(--ab-grid-gap);
+}
+
+/* ---- Kártya alap ---- */
+.ab-event-card {
+    background: #ffffff;
+    border-radius: var(--ab-grid-radius);
+    overflow: hidden;
+    box-shadow: var(--ab-grid-shadow);
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+}
+
+.ab-event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 40px rgba(12,74,110,0.16);
+}
+
+/* Kiemelt (featured) kártya – bal oszlop, teljes magasság */
+.ab-event-card--featured {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+}
+
+/* ---- Képterület ---- */
+.ab-card-image {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+/* Normál kártyákon 16:9 arány */
+.ab-event-card:not(.ab-event-card--featured) .ab-card-image {
+    aspect-ratio: 16 / 9;
+}
+
+/* Kiemelt kártyán magasabb, közel 4:3 */
+.ab-event-card--featured .ab-card-image {
+    aspect-ratio: 4 / 3;
+}
+
+.ab-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.ab-event-card:hover .ab-card-image img {
+    transform: scale(1.05);
+}
+
+/* Placeholder (kép nélkül) */
+.ab-card-image-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    background: linear-gradient(135deg, #BAE6FD, #0EA5E9, #0C4A6E);
+}
+
+/* Overlay – badge-ek konténere */
+.ab-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        transparent 30%,
+        rgba(12, 44, 80, 0.5) 100%
+    );
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 12px 14px;
+    gap: 6px;
+}
+
+/* Bal oldal: típus és "ma" badge-ek */
+.ab-card-overlay { flex-direction: row; }
+
+/* Típus badge */
+.ab-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.3px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    align-self: flex-start;
+}
+
+.ab-badge-type {
+    background: rgba(255,255,255,0.88);
+    color: #1C2B3A;
+}
+
+.ab-badge-today {
+    background: var(--ab-grid-today);
+    color: #ffffff;
+}
+
+/* Dátum badge – jobb felső sarokba */
+.ab-date-badge {
+    background: #ffffff;
+    border-radius: 10px;
+    min-width: 46px;
+    text-align: center;
+    padding: 6px 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    align-self: flex-start;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.ab-date-day {
+    display: block;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ab-grid-accent);
+    line-height: 1;
+}
+
+/* "MA" / "HOLNAP" szöveges badge */
+.ab-date-day--text {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 0;
+}
+
+.ab-date-month {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #8BA0B5;
+    letter-spacing: 0.4px;
+    margin-top: 2px;
+}
+
+/* ---- Kártya szöveg ---- */
+.ab-card-body {
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.ab-event-card--featured .ab-card-body {
+    padding: 20px 22px 22px;
+}
+
+.ab-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.ab-card-time,
+.ab-card-loc {
+    font-size: 12px;
+    color: #8BA0B5;
+}
+
+.ab-card-loc { color: var(--ab-grid-accent); font-weight: 500; }
+
+.ab-card-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1C2B3A;
+    line-height: 1.3;
+    margin: 0 0 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ab-event-card--featured .ab-card-title {
+    font-size: 24px;
+    -webkit-line-clamp: 3;
+}
+
+.ab-card-title a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s;
+}
+
+.ab-card-title a:hover { color: var(--ab-grid-accent); }
+
+.ab-card-excerpt {
+    font-size: 13.5px;
+    color: #4A6080;
+    line-height: 1.6;
+    margin: 0 0 14px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ab-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid #F0F5FA;
+}
+
+.ab-card-cta {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ab-grid-accent);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 0.2s ease;
+}
+
+.ab-card-cta:hover { gap: 8px; }
+
+.ab-cta-arrow {
+    display: inline-block;
+    transition: transform 0.25s ease;
+}
+
+.ab-card-cta:hover .ab-cta-arrow { transform: translateX(4px); }
+
+.ab-card-save {
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #F0F5FA;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ab-card-save:hover { background: #FEE2E2; }
+
+/* Üres állapot */
+.ab-grid-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #8BA0B5;
+}
+
+.ab-grid-empty span {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+/* ---- Reszponzív ---- */
+@media (max-width: 1024px) {
+    .ab-events-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+    }
+
+    .ab-event-card--featured {
+        grid-column: 1 / span 2;
+        grid-row: 1;
+    }
+
+    .ab-event-card--featured .ab-card-image {
+        aspect-ratio: 16 / 7;
+    }
+}
+
+@media (max-width: 640px) {
+    .ab-events-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ab-event-card--featured {
+        grid-column: 1;
+    }
+
+    .ab-event-card--featured .ab-card-image {
+        aspect-ratio: 16 / 9;
+    }
+
+    .ab-event-card--featured .ab-card-title {
+        font-size: 20px;
+    }
+}
+
+
+/* ============================================================
+   3. KATEGÓRIA PILLEK
+   ============================================================ */
+.ab-category-pills-wrapper {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.ab-pills-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #1A6EA3;
+    margin-bottom: 8px;
+}
+
+.ab-pills-section-title {
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 600;
+    color: #1C2B3A;
+    margin: 0 0 24px;
+    line-height: 1.2;
+}
+
+/* Grid */
+.ab-pills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* ---- Pill alap ---- */
+.ab-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 500;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.ab-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+
+/* ---- Méret variánsok ---- */
+.ab-pills-sm .ab-pill { padding: 7px 14px; font-size: 12.5px; }
+.ab-pills-md .ab-pill { padding: 9px 18px; font-size: 13.5px; }
+.ab-pills-lg .ab-pill { padding: 11px 22px; font-size: 15px; }
+
+.ab-pill-icon { font-size: 1.1em; }
+
+/* Eseményszám badge */
+.ab-pill-count {
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(0,0,0,0.1);
+    border-radius: 100px;
+    padding: 1px 6px;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* ---- Szín variánsok ---- */
+.ab-pill-blue   { background: #EFF6FF; color: #1E40AF; border-color: #BFDBFE; }
+.ab-pill-blue:hover   { background: #1E40AF; color: #fff; border-color: #1E40AF; }
+
+.ab-pill-green  { background: #F0FDF4; color: #166534; border-color: #BBF7D0; }
+.ab-pill-green:hover  { background: #166534; color: #fff; border-color: #166534; }
+
+.ab-pill-amber  { background: #FFFBEB; color: #92400E; border-color: #FDE68A; }
+.ab-pill-amber:hover  { background: #92400E; color: #fff; border-color: #92400E; }
+
+.ab-pill-purple { background: #FAF5FF; color: #6B21A8; border-color: #E9D5FF; }
+.ab-pill-purple:hover { background: #6B21A8; color: #fff; border-color: #6B21A8; }
+
+.ab-pill-rose   { background: #FFF1F2; color: #9F1239; border-color: #FECDD3; }
+.ab-pill-rose:hover   { background: #9F1239; color: #fff; border-color: #9F1239; }
+
+.ab-pill-teal   { background: #F0FDFA; color: #115E59; border-color: #99F6E4; }
+.ab-pill-teal:hover   { background: #115E59; color: #fff; border-color: #115E59; }
+
+.ab-pill-orange { background: #FFF7ED; color: #9A3412; border-color: #FED7AA; }
+.ab-pill-orange:hover { background: #9A3412; color: #fff; border-color: #9A3412; }
+
+/* Hover esetén a count badge alkalmazkodik */
+.ab-pill:hover .ab-pill-count {
+    background: rgba(255,255,255,0.25);
+}
+
+/* ---- Aktív pill (URL paraméter alapján kiemelve) ---- */
+.ab-pill--active {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    font-weight: 700;
+}
+
+.ab-pill-blue.ab-pill--active   { background: #1E40AF; color: #fff; border-color: #1E40AF; }
+.ab-pill-green.ab-pill--active  { background: #166534; color: #fff; border-color: #166534; }
+.ab-pill-amber.ab-pill--active  { background: #92400E; color: #fff; border-color: #92400E; }
+.ab-pill-purple.ab-pill--active { background: #6B21A8; color: #fff; border-color: #6B21A8; }
+.ab-pill-rose.ab-pill--active   { background: #9F1239; color: #fff; border-color: #9F1239; }
+.ab-pill-teal.ab-pill--active   { background: #115E59; color: #fff; border-color: #115E59; }
+.ab-pill-orange.ab-pill--active { background: #9A3412; color: #fff; border-color: #9A3412; }
+
+.ab-pill--active .ab-pill-count { background: rgba(255,255,255,0.25); }
+
+/* Üres állapot */
+.ab-pills-empty {
+    color: #8BA0B5;
+    font-style: italic;
+    padding: 12px 0;
+}
+
+/* ---- Reszponzív ---- */
+@media (max-width: 480px) {
+    .ab-pills-grid { gap: 7px; }
+    .ab-pills-md .ab-pill { padding: 7px 14px; font-size: 12.5px; }
+    .ab-pills-lg .ab-pill { padding: 9px 16px; font-size: 14px; }
+}
+
+
+/* ============================================================
+   2b. ESEMÉNY GRID – kiegészítések v2.0.0
+   ============================================================ */
+
+/* Árnyék variánsok – CSS variable alapján */
+.ab-event-card {
+    box-shadow: var(--ab-card-shadow, 0 2px 16px rgba(12,74,110,0.09));
+}
+
+/* Egyenlő grid layoutok */
+.ab-grid-equal {
+    display: grid;
+    gap: 20px;
+}
+
+.ab-grid-col-2 { grid-template-columns: repeat(2, 1fr); }
+.ab-grid-col-3 { grid-template-columns: repeat(3, 1fr); }
+.ab-grid-col-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Egyenlő gridben nincs featured kártya – egységes megjelenés */
+.ab-grid-equal .ab-event-card--featured {
+    grid-column: auto;
+    grid-row: auto;
+}
+
+.ab-grid-equal .ab-event-card--featured .ab-card-image {
+    aspect-ratio: 16 / 9;
+}
+
+.ab-grid-equal .ab-event-card--featured .ab-card-title {
+    font-size: 18px; /* Kis kártyák méretét örökli */
+}
+
+/* Overlay bal oldali badge konténer */
+.ab-overlay-left {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+}
+
+/* Reszponzív – egyenlő grid */
+@media (max-width: 1024px) {
+    .ab-grid-col-4 { grid-template-columns: repeat(2, 1fr); }
+    .ab-grid-col-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+    .ab-grid-col-4,
+    .ab-grid-col-3,
+    .ab-grid-col-2 { grid-template-columns: 1fr; }
+}
+
+
+/* ============================================================
+   Featured kártya automatikus magasság – v1.2.0
+   A featured kártya képe rugalmasan kitölti a jobb oldali
+   kis kártyák teljes magasságát. object-fit:cover gondoskodik
+   arról, hogy a kép NEM torzul – csak crop-ol.
+   ============================================================ */
+
+/* Az aszimmetrikus grid automatikus módban flex-ből épül */
+.ab-grid-asymmetric.ab-feat-auto {
+    align-items: stretch; /* minden oszlop egyforma magas */
+}
+
+/* A featured kártya maga is kitölti a teljes oszlopmagasságot */
+.ab-grid-asymmetric.ab-feat-auto .ab-event-card--featured {
+    display: flex;
+    flex-direction: column;
+}
+
+/* A képterület flex:1 – kitölti a maradék teret a body felett */
+.ab-grid-asymmetric.ab-feat-auto .ab-event-card--featured .ab-card-image {
+    flex: 1;
+    height: auto;        /* felülírjuk az esetleges px értéket */
+    aspect-ratio: unset; /* felülírjuk az aspect-ratio-t */
+    min-height: 200px;   /* biztonsági minimum, ha nagyon kevés kártya van */
+}
+
+/* A kép maga tölti ki a konténert – NEM torzul */
+.ab-grid-asymmetric.ab-feat-auto .ab-event-card--featured .ab-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* crop, nem torzítás */
+}
+
+
+/* ── Auto-height javítás – card-body NEM nyúlik, csak a kép ── */
+.ab-grid-asymmetric.ab-feat-auto .ab-event-card--featured {
+    height: 100%;
+}
+
+.ab-grid-asymmetric.ab-feat-auto .ab-event-card--featured .ab-card-body {
+    flex: 0 0 auto;  /* fix magasság – NEM nyúlik */
+}
+
+.ab-grid-asymmetric.ab-feat-auto .ab-event-card--featured .ab-card-image {
+    flex: 1 1 0;     /* ez veszi fel az összes maradék teret */
+    min-height: 180px;
+}
+
+
+/* ============================================================
+   Blurred backdrop képillesztés – v1.3.0
+   Minden kártyánál (featured + kis kártyák) egyaránt működik.
+   ============================================================ */
+
+/* A képterület legyen pozicionálási kontextus és rejtse a túlnyúló részeket */
+.ab-fit-backdrop .ab-card-image {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Elmosott háttér – ugyanaz a kép, blurral, cover-rel kitölti a teret */
+.ab-fit-backdrop .ab-card-image .ab-img-backdrop {
+    position: absolute;
+    inset: -10px; /* kicsit kilóg, hogy a blur szélei ne legyenek láthatók */
+    background-size: cover;
+    background-position: center;
+    filter: blur(18px) brightness(0.7) saturate(1.2);
+    transform: scale(1.05); /* blur edge fix */
+    z-index: 0;
+}
+
+/* A tényleges kép contain-nel, középre igazítva, a backdrop fölött */
+.ab-fit-backdrop .ab-card-image .ab-img-main {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+}
+
+/* Az overlay és badge-ek a kép fölé kerüljenek */
+.ab-fit-backdrop .ab-card-image .ab-card-overlay {
+    z-index: 2;
+}
+
+/* Cover módban az img_position selector érvényesül az alap CSS-ből,
+   backdrop módban a contain + center a fix – nincs külön szabály szükséges */
+
+
+/* ── Backdrop fix: featured kártya auto-height módban ── */
+
+/* A featured kártya képterülete flex gyerekként nyúlik,
+   de a backdrop/main image-nek abszolút pozícionáláshoz
+   szükség van hogy a szülő legyen a pozícionálási kontextus
+   ÉS legyen explicit mérete. A trükk: belső wrapper. */
+.ab-feat-auto.ab-fit-backdrop .ab-event-card--featured .ab-card-image {
+    position: relative;
+    overflow: hidden;
+    /* flex:1 megmarad az auto-height CSS-ből */
+}
+
+/* A backdrop-nak szüksége van hogy a szülőnek legyen kiszámítható mérete.
+   Az ab-img-main-t is abszolúttá tesszük hogy kitöltse a teret. */
+.ab-feat-auto.ab-fit-backdrop .ab-event-card--featured .ab-card-image .ab-img-backdrop,
+.ab-feat-auto.ab-fit-backdrop .ab-event-card--featured .ab-card-image .ab-img-main {
+    position: absolute;
+    inset: 0;
+}
+
+.ab-feat-auto.ab-fit-backdrop .ab-event-card--featured .ab-card-image .ab-img-backdrop {
+    inset: -10px;
+    filter: blur(18px) brightness(0.7) saturate(1.2);
+    transform: scale(1.05);
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+.ab-feat-auto.ab-fit-backdrop .ab-event-card--featured .ab-card-image .ab-img-main {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    z-index: 1;
+}
+
+
+/* ============================================================
+   Backdrop stílus variánsok – v1.4.0
+   ============================================================ */
+
+/* --- FROSTED GLASS (alapértelmezett, világos) --- */
+/* Felülírjuk az alap backdrop filter értékeit */
+.ab-fit-backdrop:not(.ab-backdrop-dark) .ab-card-image .ab-img-backdrop {
+    filter: blur(20px) brightness(1.1) saturate(0.8);
+    opacity: 0.85;
+}
+/* Fehér frosted overlay a backdrop fölé */
+.ab-fit-backdrop:not(.ab-backdrop-dark) .ab-card-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.35);
+    z-index: 1; /* backdrop(0) < overlay(1) < kép(2) < badge(3) */
+    pointer-events: none;
+}
+.ab-fit-backdrop:not(.ab-backdrop-dark) .ab-card-image .ab-img-main {
+    z-index: 2;
+}
+.ab-fit-backdrop:not(.ab-backdrop-dark) .ab-card-image .ab-card-overlay {
+    z-index: 3;
+}
+
+/* --- SÖTÉT BACKDROP (filmplakát, az eredeti stílus, de finomítva) --- */
+.ab-fit-backdrop.ab-backdrop-dark .ab-card-image .ab-img-backdrop {
+    filter: blur(18px) brightness(0.55) saturate(1.2);
+}
+
+/* --- FEHÉR HÁTTÉR MÓD --- */
+.ab-fit-white .ab-card-image {
+    background: #f8f8f8;
+    position: relative;
+    overflow: hidden;
+}
+.ab-fit-white .ab-card-image img {
+    object-fit: contain !important;
+    object-position: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Auto-height + fehér háttér */
+.ab-feat-auto.ab-fit-white .ab-event-card--featured .ab-card-image img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Auto-height + frosted featured kártyánál az overlay z-index */
+.ab-feat-auto.ab-fit-backdrop:not(.ab-backdrop-dark)
+  .ab-event-card--featured .ab-card-image::after {
+    z-index: 1;
+}
+.ab-feat-auto.ab-fit-backdrop:not(.ab-backdrop-dark)
+  .ab-event-card--featured .ab-card-image .ab-img-main {
+    z-index: 2;
+}
+.ab-feat-auto.ab-fit-backdrop:not(.ab-backdrop-dark)
+  .ab-event-card--featured .ab-card-image .ab-card-overlay {
+    z-index: 3;
+}

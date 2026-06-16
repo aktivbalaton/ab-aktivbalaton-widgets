@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - /bin/cp -R /home/aktivbal/ab-aktivbalaton-widgets/includes /home/aktivbal/public_html/wp-content/plugins/ab-aktivbalaton-widgets/
+    - /bin/cp -R /home/aktivbal/ab-aktivbalaton-widgets/assets /home/aktivbal/public_html/wp-content/plugins/ab-aktivbalaton-widgets/
+    - /bin/cp /home/aktivbal/ab-aktivbalaton-widgets/ab-aktivbalaton-widgets.php /home/aktivbal/public_html/wp-content/plugins/ab-aktivbalaton-widgets/
+    - find /home/aktivbal/public_html/wp-content/plugins/ab-aktivbalaton-widgets -type d -exec chmod 755 {} \;
+    - find /home/aktivbal/public_html/wp-content/plugins/ab-aktivbalaton-widgets -type f -exec chmod 644 {} \;
