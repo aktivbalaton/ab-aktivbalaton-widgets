@@ -4,7 +4,7 @@
  * Plugin URI:   https://aktivbalaton.hu
  * Description:  Három Elementor widget: Hero Statisztikák, Esemény Grid, Kategória Pillek.
  *               Önálló plugin – nem függ a sablontól, child theme nem szükséges.
- * Version:      2.0.1
+ * Version:      2.0.2
  * Author:       AktívBalaton
  * Author URI:   https://aktivbalaton.hu
  * Text Domain:  ab-widgets
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('AB_WIDGETS_VERSION', '2.0.1');
+define('AB_WIDGETS_VERSION', '2.0.2');
 define('AB_WIDGETS_PATH',    plugin_dir_path(__FILE__));
 define('AB_WIDGETS_URL',     plugin_dir_url(__FILE__));
 

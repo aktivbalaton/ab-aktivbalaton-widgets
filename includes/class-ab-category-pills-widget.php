@@ -237,7 +237,7 @@ class Category_Pills_Widget extends Widget_Base {
                        class="ab-pill ab-pill-<?php echo esc_attr($color); ?>"
                        title="<?php echo esc_attr($term->name); ?> programok">
                         <?php if ($show_icons) : ?>
-                            <span class="ab-pill-icon" aria-hidden="true"><?php echo $icon; ?></span>
+                            <span class="ab-pill-icon" aria-hidden="true"><?php echo esc_html($icon); ?></span>
                         <?php endif; ?>
                         <span class="ab-pill-label"><?php echo esc_html($term->name); ?></span>
                         <?php echo $count_html; ?>
