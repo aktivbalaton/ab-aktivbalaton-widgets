@@ -359,7 +359,8 @@
 .ab-card-cta:hover .ab-cta-arrow { transform: translateX(4px); }
 
 .ab-card-save {
-    font-size: 16px;
+    font-size: 20px;
+    line-height: 1;
     width: 32px;
     height: 32px;
     display: flex;
@@ -367,11 +368,14 @@
     justify-content: center;
     border-radius: 8px;
     background: #F0F5FA;
+    color: #94a3b8;
     cursor: pointer;
-    transition: background 0.2s;
+    user-select: none;
+    transition: background 0.2s, color 0.2s, transform 0.15s;
 }
 
-.ab-card-save:hover { background: #FEE2E2; }
+.ab-card-save:hover { background: #FFF1E2; color: #E8943A; }
+.ab-card-save.ab-saved { background: #FFF1E2; color: #E8943A; }
 
 /* ============================================================
    2b. ESEMÉNY GRID – DINAMIKA (v2.2.0)

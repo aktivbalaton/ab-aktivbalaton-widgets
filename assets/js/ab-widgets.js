@@ -7,20 +7,44 @@
 (function () {
     'use strict';
 
+    // ── Mentés gomb – valódi, perzisztens (localStorage) ─────────────────
+    var AB_SAVE_KEY = 'abSavedEvents';
+
+    function abGetSaved() {
+        try { return JSON.parse(localStorage.getItem(AB_SAVE_KEY) || '[]'); }
+        catch (e) { return []; }
+    }
+    function abSetSaved(list) {
+        try { localStorage.setItem(AB_SAVE_KEY, JSON.stringify(list)); } catch (e) {}
+    }
+    function abRenderSaveState(btn, isSaved) {
+        btn.classList.toggle('ab-saved', isSaved);
+        btn.textContent = isSaved ? '♥' : '♡';
+        btn.title = isSaved ? 'Mentve – kattints az eltávolításhoz' : 'Esemény mentése';
+        btn.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
+    }
+
     function initSaveButtons() {
+        var saved = abGetSaved();
         document.querySelectorAll('.ab-card-save').forEach(function (btn) {
             if (btn.dataset.abInit) return; // ne dupla-init
             btn.dataset.abInit = '1';
 
+            var id = btn.dataset.eventId;
+            abRenderSaveState(btn, !!id && saved.indexOf(id) !== -1);
+
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
+                if (!id) return;
 
-                var saved = btn.dataset.saved === '1';
-                btn.dataset.saved  = saved ? '0' : '1';
-                btn.textContent    = saved ? '🔖' : '🔖';
-                btn.style.background = saved ? '' : '#FEE2E2';
-                btn.title = saved ? 'Mentés' : 'Mentve';
+                var list = abGetSaved();
+                var idx  = list.indexOf(id);
+                var nowSaved;
+                if (idx === -1) { list.push(id); nowSaved = true; }
+                else { list.splice(idx, 1); nowSaved = false; }
+                abSetSaved(list);
+                abRenderSaveState(btn, nowSaved);
 
                 // Pop micro-interakció
                 btn.classList.remove('ab-pop');

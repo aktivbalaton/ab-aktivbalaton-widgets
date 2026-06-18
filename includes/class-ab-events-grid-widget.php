@@ -397,7 +397,7 @@ class Events_Grid_Widget extends Widget_Base {
 
                         <div class="ab-card-footer">
                             <a href="<?php echo $url; ?>" class="ab-card-cta"><?php echo $btn_lbl; ?><span class="ab-cta-arrow">→</span></a>
-                            <?php if ($show_save) : ?><span class="ab-card-save" title="Mentés" role="button">🔖</span><?php endif; ?>
+                            <?php if ($show_save) : ?><span class="ab-card-save" data-event-id="<?php echo (int) $event->ID; ?>" title="Esemény mentése" role="button" aria-label="Esemény mentése" aria-pressed="false" tabindex="0">♡</span><?php endif; ?>
                         </div>
                     </div>
 
