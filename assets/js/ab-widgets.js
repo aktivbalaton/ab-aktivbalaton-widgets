@@ -21,15 +21,53 @@
                 btn.textContent    = saved ? '🔖' : '🔖';
                 btn.style.background = saved ? '' : '#FEE2E2';
                 btn.title = saved ? 'Mentés' : 'Mentve';
+
+                // Pop micro-interakció
+                btn.classList.remove('ab-pop');
+                void btn.offsetWidth; // reflow → újraindítja az animációt
+                btn.classList.add('ab-pop');
             });
         });
     }
 
+    // ── Scroll-in lépcsőzetes belépő (IntersectionObserver) ──────────────
+    function initGridReveal() {
+        var reduce = window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        document.querySelectorAll('.ab-events-grid-wrapper').forEach(function (wrap) {
+            if (wrap.dataset.abReveal) return;
+            wrap.dataset.abReveal = '1';
+
+            var cards = wrap.querySelectorAll('.ab-event-card');
+            if (!cards.length) return;
+
+            // JS nélkül / régi böngészőn / mozgáscsökkentésnél: marad látható
+            if (reduce || !('IntersectionObserver' in window)) return;
+
+            wrap.classList.add('ab-anim-ready');
+
+            var io = new IntersectionObserver(function (entries, obs) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    cards.forEach(function (card, i) {
+                        card.style.transitionDelay = (i * 70) + 'ms';
+                        card.classList.add('ab-in');
+                    });
+                    obs.disconnect();
+                });
+            }, { threshold: 0.15 });
+
+            io.observe(wrap);
+        });
+    }
+
     // DOM ready
+    function abInit() { initSaveButtons(); initGridReveal(); }
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initSaveButtons);
+        document.addEventListener('DOMContentLoaded', abInit);
     } else {
-        initSaveButtons();
+        abInit();
     }
 
     // Aktív pill kiemelés URL paraméter alapján (?kategoria=slug)
@@ -59,7 +97,7 @@
     if (window.elementorFrontend) {
         window.elementorFrontend.hooks.addAction(
             'frontend/element_ready/ab_events_grid.default',
-            initSaveButtons
+            function () { initSaveButtons(); initGridReveal(); }
         );
         window.elementorFrontend.hooks.addAction(
             'frontend/element_ready/ab_hero_stats.default',

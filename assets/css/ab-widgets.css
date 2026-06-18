@@ -373,6 +373,75 @@
 
 .ab-card-save:hover { background: #FEE2E2; }
 
+/* ============================================================
+   2b. ESEMÉNY GRID – DINAMIKA (v2.2.0)
+   Finom belépő + hover-mélység + akcent. prefers-reduced-motion-barát.
+   ============================================================ */
+
+/* Scroll-in lépcsőzetes belépő – csak ha a JS bekapcsolta (.ab-anim-ready),
+   így JS nélkül / régi böngészőn a kártyák azonnal láthatók (nincs FOUC) */
+.ab-anim-ready .ab-event-card {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.55s cubic-bezier(0.2,0.7,0.2,1),
+                transform 0.55s cubic-bezier(0.2,0.7,0.2,1),
+                box-shadow 0.25s ease;
+}
+.ab-anim-ready .ab-event-card.ab-in { opacity: 1; transform: none; }
+
+/* Lágyabb, hosszabb kép-zoom hoveren */
+.ab-card-image img { transition: transform 0.5s cubic-bezier(0.2,0.7,0.2,1); }
+.ab-event-card:hover .ab-card-image img { transform: scale(1.06); }
+
+/* Hover: az overlay-gradiens mélyül (badge/kép kontrasztosabb) */
+.ab-event-card:hover .ab-card-overlay {
+    background: linear-gradient(to bottom, rgba(12,44,80,0.10) 0%, transparent 32%, rgba(12,44,80,0.62) 100%);
+    transition: background 0.3s ease;
+}
+
+/* Hover: vékony narancs akcent-csík a kép alján (balról kinő) */
+.ab-card-image::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 3px;
+    background: #E8943A;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.2,0.7,0.2,1);
+    z-index: 4;
+}
+.ab-event-card:hover .ab-card-image::before { transform: scaleX(1); }
+
+/* Featured kártya: kicsivel erősebb jelenlét */
+.ab-event-card--featured { box-shadow: 0 6px 28px rgba(12,74,110,0.13); }
+
+/* "MA" badge – nagyon finom figyelemfelhívó pulzus */
+@keyframes abTodayPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.45); }
+    50%      { box-shadow: 0 0 0 7px rgba(239,68,68,0); }
+}
+.ab-badge-today { animation: abTodayPulse 2.4s ease-out infinite; }
+
+/* Mentés szív – pop a kattintáskor (JS adja az .ab-pop osztályt) */
+@keyframes abPop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.32); }
+    70%  { transform: scale(0.92); }
+    100% { transform: scale(1); }
+}
+.ab-card-save.ab-pop { animation: abPop 0.4s ease; }
+
+/* Mozgáscsökkentés tisztelete */
+@media (prefers-reduced-motion: reduce) {
+    .ab-anim-ready .ab-event-card { opacity: 1 !important; transform: none !important; transition: none; }
+    .ab-event-card:hover { transform: none; }
+    .ab-event-card:hover .ab-card-image img { transform: none; }
+    .ab-card-image::before { display: none; }
+    .ab-badge-today { animation: none; }
+    .ab-card-save.ab-pop { animation: none; }
+}
+
 /* Üres állapot */
 .ab-grid-empty {
     text-align: center;
