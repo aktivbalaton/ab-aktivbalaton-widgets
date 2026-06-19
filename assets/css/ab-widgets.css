@@ -362,7 +362,7 @@
 .ab-events-grid-wrapper .ab-card-cta:hover {
     gap: 8px;
     background: #E8943A;
-    color: #ffffff;
+    color: #ffffff !important;
     border-color: #E8943A;
 }
 
