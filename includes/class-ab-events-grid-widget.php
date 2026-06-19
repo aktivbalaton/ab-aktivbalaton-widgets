@@ -58,7 +58,22 @@ class Events_Grid_Widget extends Widget_Base {
         ]);
 
         $this->add_control('posts_count', ['label' => 'Megjelenített kártyák száma', 'type' => Controls_Manager::NUMBER, 'default' => 5, 'min' => 2, 'max' => 12]);
-        $this->add_control('weeks_ahead', ['label' => 'Előrenézési időtáv (hét)', 'type' => Controls_Manager::NUMBER, 'default' => 4, 'min' => 1, 'max' => 52]);
+        $this->add_control('weeks_ahead', ['label' => 'Előrenézési időtáv (hét)', 'type' => Controls_Manager::NUMBER, 'default' => 4, 'min' => 1, 'max' => 52, 'description' => 'Csak akkor számít, ha a „Dátum -ig" mező üres.']);
+
+        $this->add_control('datum_tol', [
+            'label'          => '📅 Dátum -tól (opcionális)',
+            'type'           => Controls_Manager::DATE_TIME,
+            'picker_options' => ['enableTime' => false, 'dateFormat' => 'Y-m-d'],
+            'default'        => '',
+            'description'    => 'Ha kitöltöd, innentől mutat (felülírja a „mától" kezdést). Üresen: a mai naptól.',
+        ]);
+        $this->add_control('datum_ig', [
+            'label'          => '📅 Dátum -ig (opcionális)',
+            'type'           => Controls_Manager::DATE_TIME,
+            'picker_options' => ['enableTime' => false, 'dateFormat' => 'Y-m-d'],
+            'default'        => '',
+            'description'    => 'Ha kitöltöd, eddig a napig mutat (az adott nap is beleértve). Üresen: az „előrenézési időtáv" dönt.',
+        ]);
 
         $this->add_control('filter_category', [
             'label'       => 'Kategória szűrő (abe_kategoria)',
@@ -167,14 +182,17 @@ class Events_Grid_Widget extends Widget_Base {
     /**
      * Események lekérése – abe_esemeny CPT, abe_kezdo_datum, abe_kategoria / abe_esemeny_tipus taxonómia.
      */
-    private function fetch_events(int $count, int $weeks, array $cat_slugs, bool $only_img, string $location_filter): array {
-        $today = date('Y-m-d');
-        $until = date('Y-m-d', strtotime('+' . ($weeks * 7) . ' days'));
+    private function fetch_events(int $count, int $weeks, array $cat_slugs, bool $only_img, string $location_filter, string $datum_tol = '', string $datum_ig = ''): array {
+        // Alsó határ: datum_tol ha megadva, különben ma. Felső határ: datum_ig ha megadva,
+        // különben az alsó határtól számított "előrenézési időtáv". A dátum Y-m-d (nap-szintű),
+        // ezért type=DATE; a felső határ a napot is tartalmazza (<=).
+        $lower = $datum_tol ?: date('Y-m-d');
+        $upper = $datum_ig  ?: date('Y-m-d', strtotime($lower . ' +' . ($weeks * 7) . ' days'));
 
         $base_meta = [
             'relation' => 'AND',
-            ['key' => 'abe_kezdo_datum', 'value' => $today, 'compare' => '>=', 'type' => 'DATE'],
-            ['key' => 'abe_kezdo_datum', 'value' => $until, 'compare' => '<=', 'type' => 'DATE'],
+            ['key' => 'abe_kezdo_datum', 'value' => $lower, 'compare' => '>=', 'type' => 'DATE'],
+            ['key' => 'abe_kezdo_datum', 'value' => $upper, 'compare' => '<=', 'type' => 'DATE'],
         ];
 
         $base_args = [
@@ -299,6 +317,8 @@ class Events_Grid_Widget extends Widget_Base {
         $cat_slugs       = array_filter((array)($s['filter_category'] ?? []));
         $only_img        = ($s['only_with_image'] ?? 'no') === 'yes';
         $location_filter = $s['location_filter']  ?? 'balatoni';
+        $datum_tol       = !empty($s['datum_tol']) && strtotime($s['datum_tol']) ? date('Y-m-d', strtotime($s['datum_tol'])) : '';
+        $datum_ig        = !empty($s['datum_ig'])  && strtotime($s['datum_ig'])  ? date('Y-m-d', strtotime($s['datum_ig']))  : '';
         $show_exc_f      = ($s['show_excerpt_featured'] ?? 'yes') === 'yes';
         $exc_w_f         = (int)($s['excerpt_words_featured'] ?? 18);
         $show_exc_s      = ($s['show_excerpt_small'] ?? 'no') === 'yes';
@@ -316,7 +336,7 @@ class Events_Grid_Widget extends Widget_Base {
         $img_fit         = $s['img_fit_mode']     ?? 'backdrop';
         $bd_style        = $s['backdrop_style']   ?? 'frosted';
 
-        $events = $this->fetch_events($count, $weeks, $cat_slugs, $only_img, $location_filter);
+        $events = $this->fetch_events($count, $weeks, $cat_slugs, $only_img, $location_filter, $datum_tol, $datum_ig);
 
         if (empty($events)) { ?>
             <div class="ab-grid-empty"><span>📅</span><p>Jelenleg nincs közelgő esemény a megadott feltételekkel.</p></div>
