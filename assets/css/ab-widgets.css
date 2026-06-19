@@ -358,7 +358,14 @@
     transition: gap 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-.ab-card-cta:hover {
+/* 3 osztályos szellektor (0,3,0) – erősebb, mint az Elementor által generált (0,2,0) */
+.ab-events-grid-wrapper .ab-card-footer .ab-card-cta {
+    color: var(--ab-cta-color, #E8943A);
+    border-color: var(--ab-cta-color, #E8943A);
+}
+
+.ab-card-cta:hover,
+.ab-events-grid-wrapper .ab-card-footer .ab-card-cta:hover {
     gap: 8px;
     background: var(--ab-cta-color, #E8943A);
     color: #ffffff;
