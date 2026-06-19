@@ -362,9 +362,9 @@
 
 .ab-card-cta:hover {
     gap: 8px;
-    background: var(--ab-cta-color, #E8943A);
-    color: #ffffff;
-    border-color: var(--ab-cta-color, #E8943A);
+    background: var(--ab-cta-hover-bg, #E8943A);
+    color: var(--ab-cta-hover-text, #ffffff);
+    border-color: var(--ab-cta-hover-bg, #E8943A);
 }
 
 .ab-cta-arrow {
