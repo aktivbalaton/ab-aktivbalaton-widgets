@@ -347,7 +347,7 @@
 .ab-card-cta {
     font-size: 13px;
     font-weight: 600;
-    color: var(--ab-grid-accent);
+    color: #E8943A;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -360,9 +360,9 @@
 
 .ab-card-cta:hover {
     gap: 8px;
-    background: var(--ab-grid-accent);
+    background: #E8943A;
     color: #ffffff;
-    border-color: var(--ab-grid-accent);
+    border-color: #E8943A;
 }
 
 .ab-cta-arrow {
