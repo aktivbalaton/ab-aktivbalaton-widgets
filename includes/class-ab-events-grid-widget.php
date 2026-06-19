@@ -305,6 +305,7 @@ class Events_Grid_Widget extends Widget_Base {
         $show_db         = ($s['show_date_badge'] ?? 'yes') === 'yes';
         $show_save       = ($s['show_save_btn']   ?? 'yes') === 'yes';
         $accent          = esc_attr($s['accent_color'] ?? '#1A6EA3');
+        $cta_color       = esc_attr($s['cta_color']    ?? '#E8943A');
         $shadow          = $this->shadow_css($s['card_shadow'] ?? 'soft');
         $grid_cls        = $this->grid_class($layout);
         $feat_auto       = ($s['featured_height_mode'] ?? 'auto') === 'auto';
@@ -396,7 +397,7 @@ class Events_Grid_Widget extends Widget_Base {
                         <?php endif; ?>
 
                         <div class="ab-card-footer">
-                            <a href="<?php echo $url; ?>" class="ab-card-cta"><?php echo $btn_lbl; ?><span class="ab-cta-arrow">→</span></a>
+                            <a href="<?php echo $url; ?>" class="ab-card-cta" style="color:<?php echo $cta_color; ?>;"><?php echo $btn_lbl; ?><span class="ab-cta-arrow">→</span></a>
                             <?php if ($show_save) : ?><span class="ab-card-save" data-event-id="<?php echo (int) $event->ID; ?>" title="Esemény mentése" role="button" aria-label="Esemény mentése" aria-pressed="false" tabindex="0">♡</span><?php endif; ?>
                         </div>
                     </div>
