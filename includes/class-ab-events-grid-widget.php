@@ -121,7 +121,9 @@ class Events_Grid_Widget extends Widget_Base {
         $this->add_control('card_bg_color', ['label' => 'Kártya háttérszín', 'type' => Controls_Manager::COLOR, 'default' => '#ffffff', 'selectors' => ['{{WRAPPER}} .ab-event-card' => 'background-color: {{VALUE}};']]);
         $this->add_control('card_shadow', ['label' => 'Kártya árnyék', 'type' => Controls_Manager::SELECT, 'default' => 'soft', 'options' => ['none' => 'Nincs', 'soft' => 'Finom', 'medium' => 'Közepes', 'strong' => 'Erős']]);
         $this->add_control('accent_color', ['label' => 'Akcentus szín', 'type' => Controls_Manager::COLOR, 'default' => '#1B2D3F', 'selectors' => ['{{WRAPPER}} .ab-events-grid-wrapper' => '--ab-grid-accent: {{VALUE}};']]);
-        $this->add_control('cta_color', ['label' => 'CTA gomb szín', 'type' => Controls_Manager::COLOR, 'default' => '#E8943A', 'selectors' => ['{{WRAPPER}} .ab-card-cta' => 'color: {{VALUE}};']]);
+        // FONTOS: NE közvetlenül a .ab-card-cta color-ját állítsuk (az fix `color:` rule-t generál,
+        // ami a hover fehér szöveget felülírja). Helyette CSS változót állítunk, a CSS abból dolgozik.
+        $this->add_control('cta_color', ['label' => 'CTA gomb szín', 'type' => Controls_Manager::COLOR, 'default' => '#E8943A', 'selectors' => ['{{WRAPPER}} .ab-events-grid-wrapper' => '--ab-cta-color: {{VALUE}};']]);
         $this->add_control('location_color', ['label' => 'Helyszín szöveg szín', 'type' => Controls_Manager::COLOR, 'default' => '#1B2D3F', 'selectors' => ['{{WRAPPER}} .ab-card-loc' => 'color: {{VALUE}};']]);
         $this->add_control('today_badge_color', ['label' => '"Ma" badge háttérszín', 'type' => Controls_Manager::COLOR, 'default' => '#EF4444', 'selectors' => ['{{WRAPPER}} .ab-badge-today' => 'background-color: {{VALUE}};']]);
         $this->add_control('divider_color', ['label' => 'Kártya footer elválasztó szín', 'type' => Controls_Manager::COLOR, 'default' => '#F0F5FA', 'selectors' => ['{{WRAPPER}} .ab-card-footer' => 'border-top-color: {{VALUE}};']]);
