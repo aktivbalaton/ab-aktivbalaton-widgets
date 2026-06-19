@@ -347,7 +347,7 @@
 .ab-card-cta {
     font-size: 13px;
     font-weight: 600;
-    color: #E8943A;
+    color: var(--ab-cta-color, #E8943A);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -358,16 +358,11 @@
     transition: gap 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-/* Magasabb specificitás – felülírja az Elementor .elementor-element-XXXX .ab-card-cta szabályt */
-.ab-events-grid-wrapper .ab-card-cta:hover {
+.ab-card-cta:hover {
     gap: 8px;
-    background: #E8943A;
-    color: #ffffff !important;
-    border-color: #E8943A;
-}
-
-.ab-events-grid-wrapper .ab-card-cta:hover .ab-cta-arrow {
+    background: var(--ab-cta-color, #E8943A);
     color: #ffffff;
+    border-color: var(--ab-cta-color, #E8943A);
 }
 
 .ab-cta-arrow {
