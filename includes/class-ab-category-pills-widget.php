@@ -200,10 +200,16 @@ class Category_Pills_Widget extends Widget_Base {
                     // URL: ?kategoria=slug – a frontend.js olvassa és szűr betöltéskor
                     $href = esc_url(add_query_arg('kategoria', $slug, $base_url));
 
-                    // Eseményszám (opcionális, 1 órás cache)
+                    // Eseményszám (opcionális, 1 órás cache).
+                    // KEZDŐÉRTÉK: a JELENLEGI hónap hátralévő része (MA → hónap utolsó napja),
+                    // mert a lista nézet alapból az aktuális hónapot mutatja. A frontend.js
+                    // a hónapléptetéskor AJAX-szal felülírja ezt az épp látott hónap számára.
                     $count_html = '';
                     if ($show_count) {
-                        $cnt_key = 'abe_cat_count_' . $term->term_id;
+                        $ma_d      = date('Y-m-d');
+                        $ho_utolso = date('Y-m-t'); // jelenlegi hónap utolsó napja
+                        // A cache-kulcs tartalmazza a mai dátumot → naponta automatikusan frissül.
+                        $cnt_key = 'abe_cat_count_' . $term->term_id . '_' . $ma_d;
                         $cnt = get_transient($cnt_key);
                         if ($cnt === false) {
                             $cnt_q = get_posts([
@@ -213,8 +219,8 @@ class Category_Pills_Widget extends Widget_Base {
                                 'fields'         => 'ids',
                                 'meta_query'     => [[
                                     'key'     => 'abe_kezdo_datum',
-                                    'value'   => date('Y-m-d'),
-                                    'compare' => '>=',
+                                    'value'   => [$ma_d, $ho_utolso],
+                                    'compare' => 'BETWEEN',
                                     'type'    => 'DATE',
                                 ]],
                                 'tax_query' => [[
@@ -235,6 +241,7 @@ class Category_Pills_Widget extends Widget_Base {
 
                     <a href="<?php echo $href; ?>"
                        class="ab-pill ab-pill-<?php echo esc_attr($color); ?>"
+                       data-term-id="<?php echo esc_attr($term->term_id); ?>"
                        title="<?php echo esc_attr($term->name); ?> programok">
                         <?php if ($show_icons) : ?>
                             <span class="ab-pill-icon" aria-hidden="true"><?php echo esc_html($icon); ?></span>
