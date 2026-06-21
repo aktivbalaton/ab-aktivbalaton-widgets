@@ -8,12 +8,13 @@ use Elementor\Group_Control_Typography;
 defined('ABSPATH') || exit;
 
 /**
- * AB Esemény Grid Widget  v3.0.0
+ * AB Esemény Grid Widget  v3.1.0
  * v3.0.0: Migrálva EventON-ról ab-esemenyek pluginra
+ * v3.1.0: balaton/vidék szűrő a dedikált abe_videk meta jelölőn (nem a Típus 2 termen)
  *
- * location_filter értékei:
- *   'balatoni'       → kizárja abe_esemeny_tipus = "balatoni-videk" eseményeket
- *   'balatoni-videk' → csak abe_esemeny_tipus = "balatoni-videk" eseményeket
+ * location_filter értékei (forrás: abe_videk meta, 1 = vidék):
+ *   'balatoni'       → kizárja a vidéki (abe_videk=1) eseményeket
+ *   'balatoni-videk' → csak a vidéki (abe_videk=1) eseményeket
  *   'all'            → minden esemény
  */
 class Events_Grid_Widget extends Widget_Base {
@@ -195,6 +196,18 @@ class Events_Grid_Widget extends Widget_Base {
             ['key' => 'abe_kezdo_datum', 'value' => $upper, 'compare' => '<=', 'type' => 'DATE'],
         ];
 
+        // ── Balaton / vidék szűrő – abe_videk meta (1 = vidék) ────────
+        // v3.1.0: taxonómia (balatoni-videk term) helyett dedikált meta jelölő.
+        if ($location_filter === 'balatoni-videk') {
+            $base_meta[] = ['key' => 'abe_videk', 'value' => '1', 'compare' => '='];
+        } elseif ($location_filter === 'balatoni') {
+            $base_meta[] = [
+                'relation' => 'OR',
+                ['key' => 'abe_videk', 'compare' => 'NOT EXISTS'],
+                ['key' => 'abe_videk', 'value' => '1', 'compare' => '!='],
+            ];
+        }
+
         $base_args = [
             'post_type'      => 'abe_esemeny',
             'post_status'    => 'publish',
@@ -216,22 +229,7 @@ class Events_Grid_Widget extends Widget_Base {
             ];
         }
 
-        // ── Helyszín szűrő (abe_esemeny_tipus) ────────────────────────
-        if ($location_filter === 'balatoni-videk') {
-            $tax_query[] = [
-                'taxonomy' => 'abe_esemeny_tipus',
-                'field'    => 'slug',
-                'terms'    => ['balatoni-videk'],
-                'operator' => 'IN',
-            ];
-        } elseif ($location_filter === 'balatoni') {
-            $tax_query[] = [
-                'taxonomy' => 'abe_esemeny_tipus',
-                'field'    => 'slug',
-                'terms'    => ['balatoni-videk'],
-                'operator' => 'NOT IN',
-            ];
-        }
+        // ── Helyszín (balaton/vidék) szűrő: lásd fentebb a $base_meta abe_videk clause-t ──
 
         if (!empty($tax_query)) {
             $tax_query['relation'] = 'AND';
