@@ -270,6 +270,25 @@
     margin-top: 2px;
 }
 
+/* Dátum-jelvény pozíció variánsok.
+   Az overlay flex-konténer; a badge-et a margin-okkal toljuk a kívánt sarokba. */
+.ab-card-overlay.ab-datepos-top-right .ab-date-badge    { margin-left: auto; align-self: flex-start; }
+.ab-card-overlay.ab-datepos-top-left .ab-date-badge     { margin-right: auto; margin-left: 0; align-self: flex-start; order: -1; }
+.ab-card-overlay.ab-datepos-bottom-right .ab-date-badge { margin-left: auto; align-self: flex-end; }
+.ab-card-overlay.ab-datepos-bottom-left .ab-date-badge  { margin-right: auto; margin-left: 0; align-self: flex-end; order: -1; }
+
+/* Bal-oldali pozícióknál a típus/ma badge-konténer ne ütközzön – jobbra toljuk */
+.ab-card-overlay.ab-datepos-top-left .ab-overlay-left,
+.ab-card-overlay.ab-datepos-bottom-left .ab-overlay-left { margin-left: auto; order: 1; }
+
+/* Kép alatti színes sáv – alapból rejtett, az Elementor kapcsoló jeleníti meg */
+.ab-card-header-bar {
+    display: none;
+    width: 100%;
+    height: 5px;
+    background: var(--ab-grid-accent);
+}
+
 /* ---- Kártya szöveg ---- */
 .ab-card-body {
     padding: 16px 18px 18px;

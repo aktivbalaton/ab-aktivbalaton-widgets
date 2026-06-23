@@ -134,7 +134,42 @@ class Events_Grid_Widget extends Widget_Base {
         // ── 5. KÁRTYA DESIGN ──────────────────────────────────────────
         $this->start_controls_section('sec_card_style', ['label' => '🎨 Kártya design', 'tab' => Controls_Manager::TAB_STYLE]);
         $this->add_control('card_radius', ['label' => 'Kártya sarkok kerekítése (px)', 'type' => Controls_Manager::SLIDER, 'size_units' => ['px'], 'range' => ['px' => ['min' => 0, 'max' => 32]], 'default' => ['unit' => 'px', 'size' => 16], 'selectors' => ['{{WRAPPER}} .ab-event-card' => 'border-radius: {{SIZE}}{{UNIT}};']]);
-        $this->add_control('card_bg_color', ['label' => 'Kártya háttérszín', 'type' => Controls_Manager::COLOR, 'default' => '#ffffff', 'selectors' => ['{{WRAPPER}} .ab-event-card' => 'background-color: {{VALUE}};']]);
+        $this->add_control('card_bg_color', ['label' => 'Kártya háttérszín (kép alatti rész)', 'type' => Controls_Manager::COLOR, 'default' => '#ffffff', 'description' => 'A kártya törzsének háttere a kép alatt. Sötét szín + világos szövegszín markáns hatást ad.', 'selectors' => ['{{WRAPPER}} .ab-event-card' => 'background-color: {{VALUE}};']]);
+        $this->add_control('header_bar_enable', [
+            'label' => 'Kép alatti színes sáv (jegy-hatás)',
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => 'Be', 'label_off' => 'Ki',
+            'return_value' => 'yes', 'default' => 'no',
+            'description' => 'Egy színes csík a kép és a szöveg közé – jegy-szerű hatás.',
+        ]);
+        $this->add_control('header_bar_color', [
+            'label' => 'Színes sáv háttérszíne',
+            'type' => Controls_Manager::COLOR,
+            'default' => '#1B2D3F',
+            'condition' => ['header_bar_enable' => 'yes'],
+            'selectors' => ['{{WRAPPER}} .ab-card-header-bar' => 'background-color: {{VALUE}}; display: block;'],
+        ]);
+        $this->add_control('header_bar_height', [
+            'label' => 'Sáv vastagsága (px)',
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => ['px' => ['min' => 2, 'max' => 16]],
+            'default' => ['unit' => 'px', 'size' => 5],
+            'condition' => ['header_bar_enable' => 'yes'],
+            'selectors' => ['{{WRAPPER}} .ab-card-header-bar' => 'height: {{SIZE}}{{UNIT}};'],
+        ]);
+        $this->add_control('date_badge_position', [
+            'label' => 'Dátum-jelvény helye',
+            'type' => Controls_Manager::SELECT,
+            'default' => 'top-right',
+            'options' => [
+                'top-right'    => 'Jobb felül (jelenlegi)',
+                'top-left'     => 'Bal felül',
+                'bottom-right' => 'Jobb alul',
+                'bottom-left'  => 'Bal alul',
+            ],
+            'description' => 'A nap/hónap jelvény helye a képen.',
+        ]);
         $this->add_control('card_shadow', ['label' => 'Kártya árnyék', 'type' => Controls_Manager::SELECT, 'default' => 'soft', 'options' => ['none' => 'Nincs', 'soft' => 'Finom', 'medium' => 'Közepes', 'strong' => 'Erős']]);
         $this->add_control('accent_color', ['label' => 'Akcentus szín', 'type' => Controls_Manager::COLOR, 'default' => '#1B2D3F', 'selectors' => ['{{WRAPPER}} .ab-events-grid-wrapper' => '--ab-grid-accent: {{VALUE}};']]);
         // FONTOS: NE közvetlenül a .ab-card-cta color-ját állítsuk (az fix `color:` rule-t generál,
@@ -325,6 +360,7 @@ class Events_Grid_Widget extends Widget_Base {
         $show_loc        = ($s['show_location']   ?? 'yes') === 'yes';
         $show_tb         = ($s['show_type_badge'] ?? 'yes') === 'yes';
         $show_db         = ($s['show_date_badge'] ?? 'yes') === 'yes';
+        $date_pos        = $s['date_badge_position'] ?? 'top-right';
         $show_save       = ($s['show_save_btn']   ?? 'yes') === 'yes';
         $accent          = esc_attr($s['accent_color'] ?? '#1A6EA3');
         $cta_color       = esc_attr($s['cta_color']    ?? '#E8943A');
@@ -388,7 +424,7 @@ class Events_Grid_Widget extends Widget_Base {
                             <div class="ab-card-image-placeholder"><?php echo $is_feat ? '🎭' : '📅'; ?></div>
                         <?php endif; ?>
 
-                        <div class="ab-card-overlay">
+                        <div class="ab-card-overlay ab-datepos-<?php echo esc_attr($date_pos); ?>">
                             <div class="ab-overlay-left">
                                 <?php if ($show_tb && $type) : ?><span class="ab-badge ab-badge-type"><?php echo esc_html($type); ?></span><?php endif; ?>
                                 <?php if ($date['is_today']) : ?><span class="ab-badge ab-badge-today">🔴 Ma</span><?php endif; ?>
@@ -401,6 +437,8 @@ class Events_Grid_Widget extends Widget_Base {
                             <?php endif; ?>
                         </div>
                     </a>
+
+                    <div class="ab-card-header-bar" aria-hidden="true"></div>
 
                     <div class="ab-card-body">
                         <?php if ($show_time || $show_loc) : ?>
