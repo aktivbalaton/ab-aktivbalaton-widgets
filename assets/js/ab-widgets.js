@@ -76,7 +76,7 @@
     }
 
     // Elementor frontend újrarenderelés után (szerkesztőben)
-    if (window.elementorFrontend) {
+    if (window.elementorFrontend && window.elementorFrontend.hooks && typeof window.elementorFrontend.hooks.addAction === 'function') {
         window.elementorFrontend.hooks.addAction(
             'frontend/element_ready/ab_events_grid.default',
             function () {
