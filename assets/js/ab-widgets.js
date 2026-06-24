@@ -1,58 +1,16 @@
 /**
- * AktívBalaton – Widgets Pack JS  v1.0.0
+ * AktívBalaton – Widgets Pack JS  v1.1.0
  *
- * Minimális JavaScript – csak a 🔖 mentés gomb toggling kezelése.
+ * Scroll-in grid belépő (IntersectionObserver) + aktív kategória-pill kiemelés.
+ * A mentés (szív) logika az önálló, univerzális ab-favorites.js-ben van (delegált,
+ * localStorage 'abSavedEvents') – ide már nem duplikáljuk.
  * A carousel JS az eredeti ab-events-carousel.js-ben van, ahhoz nem nyúlunk.
  */
 (function () {
     'use strict';
 
-    // ── Mentés gomb – valódi, perzisztens (localStorage) ─────────────────
-    var AB_SAVE_KEY = 'abSavedEvents';
-
-    function abGetSaved() {
-        try { return JSON.parse(localStorage.getItem(AB_SAVE_KEY) || '[]'); }
-        catch (e) { return []; }
-    }
-    function abSetSaved(list) {
-        try { localStorage.setItem(AB_SAVE_KEY, JSON.stringify(list)); } catch (e) {}
-    }
-    function abRenderSaveState(btn, isSaved) {
-        btn.classList.toggle('ab-saved', isSaved);
-        btn.textContent = isSaved ? '♥' : '♡';
-        btn.title = isSaved ? 'Mentve – kattints az eltávolításhoz' : 'Esemény mentése';
-        btn.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
-    }
-
-    function initSaveButtons() {
-        var saved = abGetSaved();
-        document.querySelectorAll('.ab-card-save').forEach(function (btn) {
-            if (btn.dataset.abInit) return; // ne dupla-init
-            btn.dataset.abInit = '1';
-
-            var id = btn.dataset.eventId;
-            abRenderSaveState(btn, !!id && saved.indexOf(id) !== -1);
-
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (!id) return;
-
-                var list = abGetSaved();
-                var idx  = list.indexOf(id);
-                var nowSaved;
-                if (idx === -1) { list.push(id); nowSaved = true; }
-                else { list.splice(idx, 1); nowSaved = false; }
-                abSetSaved(list);
-                abRenderSaveState(btn, nowSaved);
-
-                // Pop micro-interakció
-                btn.classList.remove('ab-pop');
-                void btn.offsetWidth; // reflow → újraindítja az animációt
-                btn.classList.add('ab-pop');
-            });
-        });
-    }
+    // A mentés (szív) logika kiszervezve az önálló, univerzális ab-favorites.js-be
+    // (delegált kezelés + localStorage 'abSavedEvents'). Itt már nem duplikáljuk.
 
     // ── Scroll-in lépcsőzetes belépő (IntersectionObserver) ──────────────
     function initGridReveal() {
@@ -87,7 +45,7 @@
     }
 
     // DOM ready
-    function abInit() { initSaveButtons(); initGridReveal(); }
+    function abInit() { initGridReveal(); }
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', abInit);
     } else {
@@ -121,11 +79,10 @@
     if (window.elementorFrontend) {
         window.elementorFrontend.hooks.addAction(
             'frontend/element_ready/ab_events_grid.default',
-            function () { initSaveButtons(); initGridReveal(); }
-        );
-        window.elementorFrontend.hooks.addAction(
-            'frontend/element_ready/ab_hero_stats.default',
-            initSaveButtons
+            function () {
+                initGridReveal();
+                if (window.abFavoritesSync) window.abFavoritesSync(document); // szívek kezdő állapota
+            }
         );
     }
 

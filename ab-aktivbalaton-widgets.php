@@ -4,7 +4,7 @@
  * Plugin URI:   https://aktivbalaton.hu
  * Description:  Négy Elementor widget: Hero Statisztikák, Esemény Grid, Kategória Pillek, Kereső.
  *               Önálló plugin – nem függ a sablontól, child theme nem szükséges.
- * Version:      2.6.0
+ * Version:      2.7.0
  * Author:       AktívBalaton
  * Author URI:   https://aktivbalaton.hu
  * Text Domain:  ab-widgets
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('AB_WIDGETS_VERSION', '2.6.0');
+define('AB_WIDGETS_VERSION', '2.7.0');
 define('AB_WIDGETS_PATH',    plugin_dir_path(__FILE__));
 define('AB_WIDGETS_URL',     plugin_dir_url(__FILE__));
 
@@ -58,6 +58,20 @@ add_action('plugins_loaded', function () {
     // CSS + JS betöltése frontenden
     add_action('elementor/frontend/after_enqueue_styles', 'ab_widgets_enqueue_assets');
 });
+
+// Kedvencek (szív) JS – UNIVERZÁLIS betöltés: MINDEN frontend oldalon, az Elementortól
+// függetlenül, mert a .ab-card-save szívek máshol is megjelenhetnek (pl. naptár oldal).
+// A fájl kicsi, és ha nincs .ab-card-save a lapon, nem csinál semmit.
+add_action('wp_enqueue_scripts', 'ab_widgets_enqueue_favorites');
+function ab_widgets_enqueue_favorites(): void {
+    wp_enqueue_script(
+        'ab-favorites',
+        AB_WIDGETS_URL . 'assets/js/ab-favorites.js',
+        [],
+        AB_WIDGETS_VERSION,
+        true
+    );
+}
 
 function ab_widgets_enqueue_assets(): void {
     wp_enqueue_style(
