@@ -369,6 +369,7 @@
     font-size: 13px;
     font-weight: 600;
     color: var(--ab-cta-color, #E8943A);
+    background: var(--ab-cta-bg, transparent);
     text-decoration: none;
     display: inline-flex;
     align-items: center;

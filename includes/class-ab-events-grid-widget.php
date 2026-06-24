@@ -175,6 +175,15 @@ class Events_Grid_Widget extends Widget_Base {
         // FONTOS: NE közvetlenül a .ab-card-cta color-ját állítsuk (az fix `color:` rule-t generál,
         // ami a hover fehér szöveget felülírja). Helyette CSS változót állítunk, a CSS abból dolgozik.
         $this->add_control('cta_color', ['label' => 'CTA gomb szín (normál – szöveg + keret)', 'type' => Controls_Manager::COLOR, 'default' => '#E8943A', 'selectors' => ['{{WRAPPER}} .ab-events-grid-wrapper' => '--ab-cta-color: {{VALUE}};']]);
+        $this->add_control('cta_bg_normal', [
+            'label' => 'CTA gomb háttér – normál (teli gombhoz)',
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'description' => 'Üresen hagyva a gomb körvonalas marad. Tölts be színt (pl. #E8943A) a teli gombhoz. Tipp: ilyenkor a "CTA gomb szín (normál)" a szöveg/keret színe legyen, pl. fehér.',
+            'selectors' => [
+                '{{WRAPPER}} .ab-card-cta' => '--ab-cta-bg: {{VALUE}};',
+            ],
+        ]);
         $this->add_control('cta_hover_bg', ['label' => 'CTA gomb háttér – hover', 'type' => Controls_Manager::COLOR, 'default' => '#E8943A', 'selectors' => ['{{WRAPPER}} .ab-events-grid-wrapper' => '--ab-cta-hover-bg: {{VALUE}};']]);
         $this->add_control('cta_hover_text', ['label' => 'CTA gomb szöveg – hover', 'type' => Controls_Manager::COLOR, 'default' => '#ffffff', 'selectors' => ['{{WRAPPER}} .ab-events-grid-wrapper' => '--ab-cta-hover-text: {{VALUE}};']]);
         $this->add_control('location_color', ['label' => 'Helyszín szöveg szín', 'type' => Controls_Manager::COLOR, 'default' => '#1B2D3F', 'selectors' => ['{{WRAPPER}} .ab-card-loc' => 'color: {{VALUE}};']]);
