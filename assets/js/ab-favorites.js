@@ -1,5 +1,5 @@
 /**
- * AktívBalaton – Kedvencek (szív) – UNIVERZÁLIS, önálló logika  v1.1.0
+ * AktívBalaton – Kedvencek (szív) – UNIVERZÁLIS, önálló logika  v1.2.0
  *
  * "Szerződés": bárhol megjelenő `.ab-card-save` elem + `data-event-id` attribútum
  * automatikusan működik – widget, naptár oldali kártya, vagy bármilyen jövőbeli kártya.
@@ -55,12 +55,37 @@
         });
     }
 
+    // ── Fejléc kedvenc-számláló buborék (webshop-kosár minta) ────────────
+    // A fejlécben lévő .ab-fejlec-kedvenc szív ikonra rárakja a darabszám-buborékot.
+    // 0 kedvencnél nincs buborék (NEM mutatunk 0-t).
+    function updateFejlecSzamlalo() {
+        var ikon = document.querySelector('.ab-fejlec-kedvenc');
+        if (!ikon) return; // nincs fejléc-ikon ezen az oldalon
+
+        var count = getFavs().length;
+        var badge = ikon.querySelector('.ab-fejlec-kedvenc-badge');
+
+        if (count > 0) {
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'ab-fejlec-kedvenc-badge';
+                ikon.style.position = ikon.style.position || 'relative';
+                ikon.appendChild(badge);
+            }
+            badge.textContent = count > 99 ? '99+' : count;
+            badge.style.display = '';
+        } else if (badge) {
+            badge.style.display = 'none'; // 0 kedvenc → eltüntetés
+        }
+    }
+
     // ── Toggle egy gombhoz (kattintás / billentyű) ───────────────────────
     function activate(btn) {
         var id = btn.dataset.eventId;
         if (!id) return;
         var nowSaved = toggleFav(id);
         renderState(btn, nowSaved);
+        updateFejlecSzamlalo(); // fejléc-buborék azonnali frissítése
 
         // Pop micro-interakció (a CSS .ab-pop animáció)
         btn.classList.remove('ab-pop');
@@ -103,10 +128,11 @@
     });
 
     // ── Kezdő szinkron oldalbetöltéskor ──────────────────────────────────
+    function initFavs() { syncAll(document); updateFejlecSzamlalo(); }
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () { syncAll(document); });
+        document.addEventListener('DOMContentLoaded', initFavs);
     } else {
-        syncAll(document);
+        initFavs();
     }
 
     // ── AJAX-szal utólag betöltött kártyák kezdő állapota ────────────────
@@ -128,8 +154,12 @@
         else { document.addEventListener('DOMContentLoaded', start); }
     }
 
-    // Más szkriptek számára elérhető (pl. AJAX után kézzel is hívható)
-    window.abFavoritesSync = syncAll;
+    // Más szkriptek számára elérhető (pl. AJAX után kézzel is hívható).
+    // A szinkron végén a fejléc-buborékot is frissítjük.
+    window.abFavoritesSync = function (root) {
+        syncAll(root);
+        updateFejlecSzamlalo();
+    };
 
     // ── "Kedvenceim" oldal: a mentett események betöltése AJAX-szal ──
     // A [data-abe-kedvencek] konténer az ab-esemenyek [abe_kedvencek] shortcode-jából jön.

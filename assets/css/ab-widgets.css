@@ -473,6 +473,27 @@
 }
 .ab-card-save.ab-pop { animation: abPop 0.4s ease; }
 
+/* Fejléc kedvenc-számláló buborék (a JS adja hozzá, ha van legalább 1 kedvenc) */
+.ab-fejlec-kedvenc { position: relative; }
+.ab-fejlec-kedvenc-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    background: #E8943A;          /* narancs akcent */
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 99px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    pointer-events: none;          /* a kattintás az ikonra/linkre menjen */
+    z-index: 5;
+}
+
 /* Mozgáscsökkentés tisztelete */
 @media (prefers-reduced-motion: reduce) {
     .ab-anim-ready .ab-event-card { opacity: 1 !important; transform: none !important; transition: none; }
