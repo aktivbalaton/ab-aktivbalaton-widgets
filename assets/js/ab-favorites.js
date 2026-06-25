@@ -1,5 +1,5 @@
 /**
- * AktívBalaton – Kedvencek (szív) – UNIVERZÁLIS, önálló logika  v1.0.0
+ * AktívBalaton – Kedvencek (szív) – UNIVERZÁLIS, önálló logika  v1.1.0
  *
  * "Szerződés": bárhol megjelenő `.ab-card-save` elem + `data-event-id` attribútum
  * automatikusan működik – widget, naptár oldali kártya, vagy bármilyen jövőbeli kártya.
@@ -66,6 +66,21 @@
         btn.classList.remove('ab-pop');
         void btn.offsetWidth; // reflow → újraindítja az animációt
         btn.classList.add('ab-pop');
+
+        // Kedvenceim oldalon: ha most lett TÖRÖLVE a kedvencekből, a kártya tűnjön el.
+        if (!nowSaved) {
+            var wrap = document.querySelector('[data-abe-kedvencek]');
+            if (wrap) {
+                var card = btn.closest ? btn.closest('.abe-grid-card') : null;
+                if (card) {
+                    card.remove();
+                    if (!wrap.querySelectorAll('.abe-grid-card').length) {
+                        var emptyEl = wrap.querySelector('.abe-kedvencek-empty');
+                        if (emptyEl) emptyEl.style.display = 'block';
+                    }
+                }
+            }
+        }
     }
 
     // ── Delegált kattintás-figyelő ───────────────────────────────────────
@@ -115,5 +130,61 @@
 
     // Más szkriptek számára elérhető (pl. AJAX után kézzel is hívható)
     window.abFavoritesSync = syncAll;
+
+    // ── "Kedvenceim" oldal: a mentett események betöltése AJAX-szal ──
+    // A [data-abe-kedvencek] konténer az ab-esemenyek [abe_kedvencek] shortcode-jából jön.
+    // A tényleges kártyákat a szerver (abe_kedvencek_lista action) rendereli a navy
+    // card-grid-template.php-vel; itt csak elküldjük a localStorage ID-ket és beillesztjük.
+    function loadKedvencek() {
+        var wrap = document.querySelector('[data-abe-kedvencek]');
+        if (!wrap) return; // nem a Kedvenceim oldalon vagyunk
+
+        var loadingEl = wrap.querySelector('.abe-kedvencek-loading');
+        var emptyEl   = wrap.querySelector('.abe-kedvencek-empty');
+        var listaEl   = wrap.querySelector('.abe-kedvencek-lista');
+
+        function showEmpty() {
+            if (loadingEl) loadingEl.style.display = 'none';
+            if (emptyEl)   emptyEl.style.display = 'block';
+        }
+
+        // A nonce + ajaxurl az ab-esemenyek frontend.js abeAjax objektumából jön
+        // (ugyanezen az oldalon betöltődik az [abe_kedvencek] shortcode miatt).
+        if (typeof window.abeAjax === 'undefined') {
+            console.warn('abeAjax nincs betöltve – a Kedvenceim oldal nem tud AJAX-olni');
+            showEmpty();
+            return;
+        }
+
+        var ids = getFavs();
+        if (!ids.length) { showEmpty(); return; }
+
+        var fd = new FormData();
+        fd.append('action', 'abe_kedvencek_lista');
+        fd.append('nonce', window.abeAjax.nonce);
+        fd.append('ids', ids.join(','));
+
+        fetch(window.abeAjax.ajaxurl, { method: 'POST', body: fd })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (loadingEl) loadingEl.style.display = 'none';
+                if (res && res.success && res.data && res.data.html && res.data.total > 0) {
+                    listaEl.innerHTML = res.data.html;
+                    syncAll(listaEl); // a frissen beillesztett kártyák szíveinek állapota
+                } else {
+                    showEmpty();
+                }
+            })
+            .catch(function () {
+                if (loadingEl) loadingEl.style.display = 'none';
+                showEmpty();
+            });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadKedvencek);
+    } else {
+        loadKedvencek();
+    }
 
 })();
