@@ -1,5 +1,5 @@
 /**
- * AktívBalaton – Kedvencek (szív) – UNIVERZÁLIS, önálló logika  v1.2.0
+ * AktívBalaton – Kedvencek (szív) – UNIVERZÁLIS, önálló logika  v1.3.0
  *
  * "Szerződés": bárhol megjelenő `.ab-card-save` elem + `data-event-id` attribútum
  * automatikusan működik – widget, naptár oldali kártya, vagy bármilyen jövőbeli kártya.
@@ -178,10 +178,19 @@
             if (emptyEl)   emptyEl.style.display = 'block';
         }
 
-        // A nonce + ajaxurl az ab-esemenyek frontend.js abeAjax objektumából jön
-        // (ugyanezen az oldalon betöltődik az [abe_kedvencek] shortcode miatt).
-        if (typeof window.abeAjax === 'undefined') {
-            console.warn('abeAjax nincs betöltve – a Kedvenceim oldal nem tud AJAX-olni');
+        // Az ajaxurl + nonce ELSŐSORBAN a shortcode data-attribútumaiból (független az
+        // abeAjax-tól, ami egy másik plugin enqueue-időzítésétől függne).
+        var ajaxurl = wrap.getAttribute('data-ajaxurl');
+        var nonce   = wrap.getAttribute('data-nonce');
+
+        // Fallback: ha valamiért nincs data-attribútum, próbáljuk a globális abeAjax-ot.
+        if ((!ajaxurl || !nonce) && typeof window.abeAjax !== 'undefined') {
+            ajaxurl = ajaxurl || window.abeAjax.ajaxurl;
+            nonce   = nonce   || window.abeAjax.nonce;
+        }
+
+        if (!ajaxurl || !nonce) {
+            console.warn('Kedvenceim: hiányzik az ajaxurl vagy a nonce – nem tudok AJAX-olni');
             showEmpty();
             return;
         }
@@ -191,10 +200,10 @@
 
         var fd = new FormData();
         fd.append('action', 'abe_kedvencek_lista');
-        fd.append('nonce', window.abeAjax.nonce);
+        fd.append('nonce', nonce);
         fd.append('ids', ids.join(','));
 
-        fetch(window.abeAjax.ajaxurl, { method: 'POST', body: fd })
+        fetch(ajaxurl, { method: 'POST', body: fd })
             .then(function (r) { return r.json(); })
             .then(function (res) {
                 if (loadingEl) loadingEl.style.display = 'none';
