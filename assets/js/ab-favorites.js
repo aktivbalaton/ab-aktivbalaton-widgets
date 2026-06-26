@@ -1,5 +1,5 @@
 /**
- * AktívBalaton – Kedvencek (szív) – UNIVERZÁLIS, önálló logika  v1.3.0
+ * AktívBalaton – Kedvencek (szív) – UNIVERZÁLIS, önálló logika  v1.3.1
  *
  * "Szerződés": bárhol megjelenő `.ab-card-save` elem + `data-event-id` attribútum
  * automatikusan működik – widget, naptár oldali kártya, vagy bármilyen jövőbeli kártya.
@@ -73,7 +73,9 @@
                 ikon.appendChild(badge);
             }
             badge.textContent = count > 99 ? '99+' : count;
-            badge.style.display = '';
+            // Explicit látható érték (nem ''), hogy felülírja a HTML-widget <style>
+            // blokkjának .ab-fejlec-kedvenc-badge { display:none } CSS-szabályát is.
+            badge.style.display = 'inline-block';
         } else if (badge) {
             badge.style.display = 'none'; // 0 kedvenc → eltüntetés
         }
