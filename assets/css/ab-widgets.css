@@ -1030,7 +1030,10 @@
 }
 
 /* ============================================================
-   6. GYORS LINKEK (CTA gombok a SEO landing oldalakra)
+   6. GYORS LINKEK (CTA gombok / csempék a SEO landing oldalakra)
+   A színeket/tipográfiát/keretet/árnyékot az Elementor kontrollok adják
+   (a widget defaultjaival). Itt csak a SZERKEZET + 2 elrendezés + animációk.
+   A defaultok itt is szerepelnek fallbackként (ha az Elementor CSS nincs kész).
    ============================================================ */
 .ab-quicklinks-wrapper {
     font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -1054,87 +1057,88 @@
     line-height: 1.2;
 }
 
-.ab-quicklinks-row {
+/* ---- Sor (gombsor) elrendezés ---- */
+.ab-quicklinks--row .ab-quicklinks-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 14px;
+    gap: 16px;
     justify-content: center;
 }
 
-/* ---- CTA gomb alap (csak elrendezés – a színt a stílus-variáns adja) ---- */
+/* ---- Csempe (grid) elrendezés ---- */
+.ab-quicklinks--tile .ab-quicklinks-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* az Elementor 'columns' kontroll felülírja */
+    gap: 16px;
+}
+
+/* ---- Gomb / csempe doboz (alap szerkezet + brand fallback) ---- */
 .ab-quicklink {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 10px;
-    padding: 13px 24px;
-    border-radius: 12px;
     text-decoration: none;
-    font-size: 16px;
+    line-height: 1.25;
     font-weight: 700;
-    line-height: 1;
-    border: 2px solid transparent;
-    background: transparent;
+    border: 2px solid #1B2D3F;     /* fallback – kontroll felülírja */
+    color: #1B2D3F;                /* fallback */
+    background: transparent;       /* fallback */
+    border-radius: 12px;
+    padding: 18px 22px;
     transition: transform 0.18s ease, box-shadow 0.18s ease,
                 background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
-.ab-quicklink-icon { font-size: 1.25em; }
+.ab-quicklink:hover {              /* fallback hover (kontroll felülírja) */
+    background: #E8943A;
+    border-color: #E8943A;
+    color: #fff;
+}
+
+/* Sor: ikon | szöveg | nyíl */
+.ab-quicklinks--row .ab-quicklink { flex-direction: row; }
+.ab-quicklinks--row .ab-quicklink-text { text-align: left; }
+.ab-quicklinks--row .ab-quicklink-arrow { margin-left: auto; }
+
+/* Csempe: ikon felül, középre */
+.ab-quicklinks--tile .ab-quicklink {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.ab-quicklinks--tile .ab-quicklink-text { text-align: center; }
+
+/* Ikon + szöveg + alszöveg */
+.ab-quicklink-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.ab-quicklink-icon svg { width: 1em; height: 1em; fill: currentColor; }
+.ab-quicklink-text { display: flex; flex-direction: column; gap: 2px; }
+.ab-quicklink-label { display: block; }
+.ab-quicklink-desc {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.85;
+}
 .ab-quicklink-arrow {
     display: inline-block;
     font-weight: 700;
     transition: transform 0.25s ease;
 }
-.ab-quicklink:hover .ab-quicklink-arrow { transform: translateX(4px); }
 
-/* ---- Brand stílus-variánsok (csak narancs / navy / fehér) ---- */
-
-/* Körvonalas (navy) → hover narancs kitöltés */
-.ab-quicklink--outline {
-    background: transparent;
-    border-color: #1B2D3F;
-    color: #1B2D3F;
-}
-.ab-quicklink--outline:hover {
-    background: #E8943A;
-    border-color: #E8943A;
-    color: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(232,148,58,0.32);
-}
-
-/* Elsődleges (narancs kitöltött) */
-.ab-quicklink--primary {
-    background: #E8943A;
-    border-color: #E8943A;
-    color: #fff;
-    text-shadow: 0 1px 1px rgba(0,0,0,0.18);
-    box-shadow: 0 2px 8px rgba(232,148,58,0.32);
-}
-.ab-quicklink--primary:hover {
-    background: #d67f24;
-    border-color: #d67f24;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(232,148,58,0.42);
-}
-
-/* Másodlagos (navy kitöltött) → hover narancs */
-.ab-quicklink--secondary {
-    background: #1B2D3F;
-    border-color: #1B2D3F;
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(27,45,63,0.28);
-}
-.ab-quicklink--secondary:hover {
-    background: #E8943A;
-    border-color: #E8943A;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(232,148,58,0.38);
-}
+/* ---- Hover animációk (a wrapper class vezérli) ---- */
+.ab-quicklinks--anim-lift  .ab-quicklink:hover { transform: translateY(-3px); }
+.ab-quicklinks--anim-zoom  .ab-quicklink:hover { transform: scale(1.03); }
+.ab-quicklinks--anim-arrow .ab-quicklink:hover .ab-quicklink-arrow { transform: translateX(4px); }
 
 /* ---- Reszponzív ---- */
 @media (max-width: 600px) {
-    .ab-quicklinks-row { gap: 10px; }
-    .ab-quicklink { padding: 12px 18px; font-size: 15px; }
-    /* Teljes szélességű gombok mobilon (ha bekapcsolva) */
+    /* Teljes szélességű gombok mobilon (gombsor, ha bekapcsolva) */
     .ab-quicklinks-row--fw { flex-direction: column; }
     .ab-quicklinks-row--fw .ab-quicklink { width: 100%; justify-content: center; }
 }
