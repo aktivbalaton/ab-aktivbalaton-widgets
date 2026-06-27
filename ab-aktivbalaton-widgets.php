@@ -2,9 +2,9 @@
 /**
  * Plugin Name:  AktívBalaton – Widgets Pack
  * Plugin URI:   https://aktivbalaton.hu
- * Description:  Négy Elementor widget: Hero Statisztikák, Esemény Grid, Kategória Pillek, Kereső.
+ * Description:  Öt Elementor widget: Hero Statisztikák, Esemény Grid, Kategória Pillek, Kereső, Gyors linkek.
  *               Önálló plugin – nem függ a sablontól, child theme nem szükséges.
- * Version:      2.9.2
+ * Version:      2.10.0
  * Author:       AktívBalaton
  * Author URI:   https://aktivbalaton.hu
  * Text Domain:  ab-widgets
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('AB_WIDGETS_VERSION', '2.9.2');
+define('AB_WIDGETS_VERSION', '2.10.0');
 define('AB_WIDGETS_PATH',    plugin_dir_path(__FILE__));
 define('AB_WIDGETS_URL',     plugin_dir_url(__FILE__));
 
@@ -48,11 +48,13 @@ add_action('plugins_loaded', function () {
         require_once AB_WIDGETS_PATH . 'includes/class-ab-events-grid-widget.php';
         require_once AB_WIDGETS_PATH . 'includes/class-ab-category-pills-widget.php';
         require_once AB_WIDGETS_PATH . 'includes/class-ab-search-widget.php';
+        require_once AB_WIDGETS_PATH . 'includes/class-ab-quick-links-widget.php';
 
         $wm->register(new \AktivBalaton\Hero_Stats_Widget());
         $wm->register(new \AktivBalaton\Events_Grid_Widget());
         $wm->register(new \AktivBalaton\Category_Pills_Widget());
         $wm->register(new \AktivBalaton\Search_Widget());
+        $wm->register(new \AktivBalaton\Quick_Links_Widget());
     });
 
     // CSS + JS betöltése frontenden

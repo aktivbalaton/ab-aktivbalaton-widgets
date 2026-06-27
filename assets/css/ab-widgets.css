@@ -1028,3 +1028,91 @@
     .ab-search-btn span { display: none; }   /* mobilon csak az ikon */
     .ab-search-btn { padding: 0 18px !important; }
 }
+
+/* ============================================================
+   6. GYORS LINKEK (CTA gombok a SEO landing oldalakra)
+   ============================================================ */
+.ab-quicklinks-wrapper {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.ab-quicklinks-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #1A6EA3;
+    margin-bottom: 8px;
+}
+
+.ab-quicklinks-section-title {
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 600;
+    color: #1C2B3A;
+    margin: 0 0 24px;
+    line-height: 1.2;
+}
+
+.ab-quicklinks-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+}
+
+/* ---- CTA gomb alap ---- */
+.ab-quicklink {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 14px rgba(12,74,110,0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.ab-quicklink:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(12,74,110,0.20);
+}
+.ab-quicklink-icon { font-size: 1.25em; }
+.ab-quicklink-arrow {
+    display: inline-block;
+    font-weight: 700;
+    transition: transform 0.25s ease;
+}
+.ab-quicklink:hover .ab-quicklink-arrow { transform: translateX(4px); }
+
+/* ---- Szín variánsok (telített CTA, fehér szöveggel) ---- */
+.ab-quicklink--orange { background: #E8943A; }
+.ab-quicklink--orange:hover { background: #d67f24; }
+
+.ab-quicklink--blue   { background: #1A6EA3; }
+.ab-quicklink--blue:hover   { background: #155b87; }
+
+.ab-quicklink--green  { background: #166534; }
+.ab-quicklink--green:hover  { background: #115028; }
+
+.ab-quicklink--purple { background: #6B21A8; }
+.ab-quicklink--purple:hover { background: #571a8a; }
+
+.ab-quicklink--teal   { background: #115E59; }
+.ab-quicklink--teal:hover   { background: #0d4a46; }
+
+.ab-quicklink--rose   { background: #9F1239; }
+.ab-quicklink--rose:hover   { background: #840e2f; }
+
+/* ---- Reszponzív ---- */
+@media (max-width: 600px) {
+    .ab-quicklinks-row { gap: 10px; }
+    .ab-quicklink { padding: 12px 18px; font-size: 15px; }
+    /* Teljes szélességű gombok mobilon (ha bekapcsolva) */
+    .ab-quicklinks-row--fw { flex-direction: column; }
+    .ab-quicklinks-row--fw .ab-quicklink { width: 100%; justify-content: center; }
+}
