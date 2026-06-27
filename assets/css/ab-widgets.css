@@ -1061,25 +1061,21 @@
     justify-content: center;
 }
 
-/* ---- CTA gomb alap ---- */
+/* ---- CTA gomb alap (csak elrendezés – a színt a stílus-variáns adja) ---- */
 .ab-quicklink {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 14px 24px;
+    padding: 13px 24px;
     border-radius: 12px;
     text-decoration: none;
     font-size: 16px;
     font-weight: 700;
     line-height: 1;
-    color: #fff;
     border: 2px solid transparent;
-    box-shadow: 0 4px 14px rgba(12,74,110,0.12);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-}
-.ab-quicklink:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 22px rgba(12,74,110,0.20);
+    background: transparent;
+    transition: transform 0.18s ease, box-shadow 0.18s ease,
+                background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 .ab-quicklink-icon { font-size: 1.25em; }
 .ab-quicklink-arrow {
@@ -1089,24 +1085,50 @@
 }
 .ab-quicklink:hover .ab-quicklink-arrow { transform: translateX(4px); }
 
-/* ---- Szín variánsok (telített CTA, fehér szöveggel) ---- */
-.ab-quicklink--orange { background: #E8943A; }
-.ab-quicklink--orange:hover { background: #d67f24; }
+/* ---- Brand stílus-variánsok (csak narancs / navy / fehér) ---- */
 
-.ab-quicklink--blue   { background: #1A6EA3; }
-.ab-quicklink--blue:hover   { background: #155b87; }
+/* Körvonalas (navy) → hover narancs kitöltés */
+.ab-quicklink--outline {
+    background: transparent;
+    border-color: #1B2D3F;
+    color: #1B2D3F;
+}
+.ab-quicklink--outline:hover {
+    background: #E8943A;
+    border-color: #E8943A;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(232,148,58,0.32);
+}
 
-.ab-quicklink--green  { background: #166534; }
-.ab-quicklink--green:hover  { background: #115028; }
+/* Elsődleges (narancs kitöltött) */
+.ab-quicklink--primary {
+    background: #E8943A;
+    border-color: #E8943A;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.18);
+    box-shadow: 0 2px 8px rgba(232,148,58,0.32);
+}
+.ab-quicklink--primary:hover {
+    background: #d67f24;
+    border-color: #d67f24;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(232,148,58,0.42);
+}
 
-.ab-quicklink--purple { background: #6B21A8; }
-.ab-quicklink--purple:hover { background: #571a8a; }
-
-.ab-quicklink--teal   { background: #115E59; }
-.ab-quicklink--teal:hover   { background: #0d4a46; }
-
-.ab-quicklink--rose   { background: #9F1239; }
-.ab-quicklink--rose:hover   { background: #840e2f; }
+/* Másodlagos (navy kitöltött) → hover narancs */
+.ab-quicklink--secondary {
+    background: #1B2D3F;
+    border-color: #1B2D3F;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(27,45,63,0.28);
+}
+.ab-quicklink--secondary:hover {
+    background: #E8943A;
+    border-color: #E8943A;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(232,148,58,0.38);
+}
 
 /* ---- Reszponzív ---- */
 @media (max-width: 600px) {

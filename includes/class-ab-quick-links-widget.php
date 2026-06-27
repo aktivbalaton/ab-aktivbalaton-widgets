@@ -75,17 +75,14 @@ class Quick_Links_Widget extends Widget_Base {
             'placeholder' => '🌅',
         ]);
 
-        $repeater->add_control('button_color', [
-            'label'   => 'Szín',
+        $repeater->add_control('button_style', [
+            'label'   => 'Stílus',
             'type'    => Controls_Manager::SELECT,
-            'default' => 'orange',
+            'default' => 'outline',
             'options' => [
-                'orange' => 'Narancs',
-                'blue'   => 'Kék',
-                'green'  => 'Zöld',
-                'purple' => 'Lila',
-                'teal'   => 'Tengerzöld',
-                'rose'   => 'Rózsaszín',
+                'outline'   => 'Körvonalas (navy)',
+                'primary'   => 'Elsődleges (narancs)',
+                'secondary' => 'Másodlagos (navy kitöltött)',
             ],
         ]);
 
@@ -99,25 +96,25 @@ class Quick_Links_Widget extends Widget_Base {
                     'button_text'  => 'Programok ma',
                     'button_url'   => ['url' => home_url('/balatoni-programok-ma/')],
                     'button_icon'  => '🌅',
-                    'button_color' => 'orange',
+                    'button_style' => 'outline',
                 ],
                 [
                     'button_text'  => 'Hétvégi programok',
                     'button_url'   => ['url' => home_url('/hetvegi-programok-balaton/')],
                     'button_icon'  => '🎉',
-                    'button_color' => 'blue',
+                    'button_style' => 'outline',
                 ],
                 [
                     'button_text'  => 'Következő 7 nap',
                     'button_url'   => ['url' => home_url('/balatoni-programok-7-nap/')],
                     'button_icon'  => '📆',
-                    'button_color' => 'green',
+                    'button_style' => 'outline',
                 ],
                 [
                     'button_text'  => 'Következő 30 nap',
                     'button_url'   => ['url' => home_url('/balatoni-programok-30-nap/')],
                     'button_icon'  => '🗓️',
-                    'button_color' => 'purple',
+                    'button_style' => 'outline',
                 ],
             ],
         ]);
@@ -172,7 +169,7 @@ class Quick_Links_Widget extends Widget_Base {
             return;
         }
 
-        $valid_colors = ['orange', 'blue', 'green', 'purple', 'teal', 'rose'];
+        $valid_styles = ['outline', 'primary', 'secondary'];
 
         $row_class = 'ab-quicklinks-row' . ($fw ? ' ab-quicklinks-row--fw' : '');
         ?>
@@ -195,9 +192,9 @@ class Quick_Links_Widget extends Widget_Base {
                     }
                     $text  = $btn['button_text']  ?? '';
                     $icon  = $btn['button_icon']  ?? '';
-                    $color = $btn['button_color'] ?? 'orange';
-                    if (! in_array($color, $valid_colors, true)) {
-                        $color = 'orange';
+                    $style = $btn['button_style'] ?? 'outline';
+                    if (! in_array($style, $valid_styles, true)) {
+                        $style = 'outline';
                     }
 
                     // Külső link célzás (Elementor URL kontroll: is_external / nofollow)
@@ -205,7 +202,7 @@ class Quick_Links_Widget extends Widget_Base {
                     $rel    = ! empty($btn['button_url']['nofollow'])    ? ' rel="nofollow"'   : '';
                 ?>
                     <a href="<?php echo esc_url($url); ?>"
-                       class="ab-quicklink ab-quicklink--<?php echo esc_attr($color); ?>"<?php echo $target . $rel; ?>>
+                       class="ab-quicklink ab-quicklink--<?php echo esc_attr($style); ?>"<?php echo $target . $rel; ?>>
                         <?php if ($icon) : ?>
                             <span class="ab-quicklink-icon" aria-hidden="true"><?php echo esc_html($icon); ?></span>
                         <?php endif; ?>
