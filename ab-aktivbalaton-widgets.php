@@ -4,7 +4,7 @@
  * Plugin URI:   https://aktivbalaton.hu
  * Description:  Öt Elementor widget: Hero Statisztikák, Esemény Grid, Kategória Pillek, Kereső, Gyors linkek.
  *               Önálló plugin – nem függ a sablontól, child theme nem szükséges.
- * Version:      2.10.1
+ * Version:      2.10.2
  * Author:       AktívBalaton
  * Author URI:   https://aktivbalaton.hu
  * Text Domain:  ab-widgets
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('AB_WIDGETS_VERSION', '2.10.1');
+define('AB_WIDGETS_VERSION', '2.10.2');
 define('AB_WIDGETS_PATH',    plugin_dir_path(__FILE__));
 define('AB_WIDGETS_URL',     plugin_dir_url(__FILE__));
 
@@ -90,10 +90,13 @@ function ab_widgets_litespeed_js_defer_exc($excludes) {
         $excludes = [];
     }
     $add = [
-        'elementorFrontendConfig', // Elementor inline config (a hiba forrása)
-        'elementor-frontend',      // Elementor frontend.js
-        'wpcf7',                   // Contact Form 7 inline
-        'contact-form-7',          // Contact Form 7 script src
+        'elementorFrontendConfig',         // Elementor inline config ("elementorFrontendConfig is not defined")
+        'elementor-frontend',              // Elementor frontend.js
+        'wpcf7',                           // Contact Form 7 inline
+        'contact-form-7',                  // Contact Form 7 script src
+        'contact-form-7-js-translations',  // CF7 fordítás-inline (wp.i18n hívás)
+        'wp-i18n',                         // WordPress i18n
+        '/wp-includes/js/dist/',           // WP core wp.* libek (i18n, hooks, dom-ready…) – "wp is not defined" fix
     ];
     foreach ($add as $item) {
         if (!in_array($item, $excludes, true)) {
