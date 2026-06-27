@@ -4,7 +4,7 @@
  * Plugin URI:   https://aktivbalaton.hu
  * Description:  Öt Elementor widget: Hero Statisztikák, Esemény Grid, Kategória Pillek, Kereső, Gyors linkek.
  *               Önálló plugin – nem függ a sablontól, child theme nem szükséges.
- * Version:      2.10.0
+ * Version:      2.10.1
  * Author:       AktívBalaton
  * Author URI:   https://aktivbalaton.hu
  * Text Domain:  ab-widgets
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('AB_WIDGETS_VERSION', '2.10.0');
+define('AB_WIDGETS_VERSION', '2.10.1');
 define('AB_WIDGETS_PATH',    plugin_dir_path(__FILE__));
 define('AB_WIDGETS_URL',     plugin_dir_url(__FILE__));
 
@@ -73,6 +73,34 @@ function ab_widgets_enqueue_favorites(): void {
         AB_WIDGETS_VERSION,
         true
     );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LiteSpeed Cache kompatibilitás
+// A LiteSpeed "Load JS Deferred/Delayed" + "JS Combine" rossz sorrendben
+// futtathatja az Elementor (elementorFrontendConfig) és a Contact Form 7 (wpcf7)
+// szkriptjeit → "is not defined" hiba → az egész oldal JS-e elhal (fehér oldal).
+// Itt kizárjuk ezeket a késleltetésből, hogy a LiteSpeed beállítások módosítása
+// NÉLKÜL is helyes maradjon a betöltési sorrend. (Ha a LiteSpeed nincs telepítve,
+// a szűrő egyszerűen nem fut le – ártalmatlan.)
+// ─────────────────────────────────────────────────────────────────────────────
+add_filter('litespeed_optm_js_defer_exc', 'ab_widgets_litespeed_js_defer_exc');
+function ab_widgets_litespeed_js_defer_exc($excludes) {
+    if (!is_array($excludes)) {
+        $excludes = [];
+    }
+    $add = [
+        'elementorFrontendConfig', // Elementor inline config (a hiba forrása)
+        'elementor-frontend',      // Elementor frontend.js
+        'wpcf7',                   // Contact Form 7 inline
+        'contact-form-7',          // Contact Form 7 script src
+    ];
+    foreach ($add as $item) {
+        if (!in_array($item, $excludes, true)) {
+            $excludes[] = $item;
+        }
+    }
+    return $excludes;
 }
 
 function ab_widgets_enqueue_assets(): void {
