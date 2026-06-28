@@ -403,77 +403,26 @@ class Events_Grid_Widget extends Widget_Base {
             <div class="ab-events-grid <?php echo esc_attr($grid_cls); ?><?php echo $feat_auto ? ' ab-feat-auto' : ''; ?><?php echo $img_fit === 'backdrop' ? ' ab-fit-backdrop' : ''; ?><?php echo $img_fit === 'white' ? ' ab-fit-white' : ''; ?><?php echo ($img_fit === 'backdrop' && $bd_style === 'dark') ? ' ab-backdrop-dark' : ''; ?>">
 
             <?php foreach ($events as $i => $event) :
-                $kezdo_d = get_post_meta($event->ID, 'abe_kezdo_datum', true);
-                $kezdo_i = get_post_meta($event->ID, 'abe_kezdo_ido',   true) ?: '00:00';
-                $ts      = $kezdo_d ? strtotime($kezdo_d . ' ' . $kezdo_i) : 0;
-                $img     = $this->img_url($event->ID);
-                $color   = $this->event_color($event->ID, $accent);
-                $loc     = $this->location($event->ID);
-                $type    = $this->event_type($event->ID);
-                $date    = $this->parse_date($ts);
-                $url     = esc_url(get_permalink($event->ID));
+                if (!function_exists('abe_render_event_card')) { continue; } // ab-esemenyek plugin inaktív
                 $is_feat = ($i === 0 && $layout === 'asymmetric');
-                $raw_exc = $event->post_excerpt ?: wp_trim_words(strip_tags($event->post_content), 30);
-                $exc_f   = wp_trim_words($raw_exc, $exc_w_f);
-                $exc_s   = wp_trim_words($raw_exc, $exc_w_s);
-                $card_cls = $is_feat ? 'ab-event-card ab-event-card--featured' : 'ab-event-card';
-            ?>
-
-                <article class="<?php echo $card_cls; ?>" style="--event-color:<?php echo esc_attr($color); ?>;">
-
-                    <a href="<?php echo $url; ?>" class="ab-card-image" tabindex="-1" aria-hidden="true">
-                        <?php if ($img) : ?>
-                            <?php if ($img_fit === 'backdrop') : ?>
-                                <div class="ab-img-backdrop" style="background-image:url('<?php echo esc_url($img); ?>');"></div>
-                                <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($event->post_title); ?>" class="ab-img-main" loading="<?php echo $i < 2 ? 'eager' : 'lazy'; ?>">
-                            <?php else : ?>
-                                <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($event->post_title); ?>" loading="<?php echo $i < 2 ? 'eager' : 'lazy'; ?>">
-                            <?php endif; ?>
-                        <?php else : ?>
-                            <div class="ab-card-image-placeholder"><?php echo $is_feat ? '🎭' : '📅'; ?></div>
-                        <?php endif; ?>
-
-                        <div class="ab-card-overlay ab-datepos-<?php echo esc_attr($date_pos); ?>">
-                            <div class="ab-overlay-left">
-                                <?php if ($show_tb && $type) : ?><span class="ab-badge ab-badge-type"><?php echo esc_html($type); ?></span><?php endif; ?>
-                                <?php if ($date['is_today']) : ?><span class="ab-badge ab-badge-today">🔴 Ma</span><?php endif; ?>
-                            </div>
-                            <?php if ($show_db) : ?>
-                                <div class="ab-date-badge">
-                                    <span class="ab-date-day <?php echo empty($date['month']) ? 'ab-date-day--text' : ''; ?>"><?php echo esc_html($date['day']); ?></span>
-                                    <?php if ($date['month']) : ?><span class="ab-date-month"><?php echo esc_html($date['month']); ?></span><?php endif; ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </a>
-
-                    <div class="ab-card-header-bar" aria-hidden="true"></div>
-
-                    <div class="ab-card-body">
-                        <?php if ($show_time || $show_loc) : ?>
-                            <div class="ab-card-meta">
-                                <?php if ($show_time && !empty($date['time']) && $date['time'] !== '00:00') : ?><span class="ab-card-time">🕐 <?php echo esc_html($date['time']); ?></span><?php endif; ?>
-                                <?php if ($show_loc && $loc) : ?><span class="ab-card-loc">📍 <?php echo esc_html($loc); ?></span><?php endif; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <h3 class="ab-card-title"><a href="<?php echo $url; ?>"><?php echo esc_html($event->post_title); ?></a></h3>
-
-                        <?php if ($is_feat && $show_exc_f && $exc_f) : ?>
-                            <p class="ab-card-excerpt"><?php echo esc_html($exc_f); ?></p>
-                        <?php elseif (!$is_feat && $show_exc_s && $exc_s) : ?>
-                            <p class="ab-card-excerpt"><?php echo esc_html($exc_s); ?></p>
-                        <?php endif; ?>
-
-                        <div class="ab-card-footer">
-                            <a href="<?php echo $url; ?>" class="ab-card-cta"><?php echo $btn_lbl; ?><span class="ab-cta-arrow">→</span></a>
-                            <?php if ($show_save) : ?><span class="ab-card-save" data-event-id="<?php echo (int) $event->ID; ?>" title="Esemény mentése" role="button" aria-label="Esemény mentése" aria-pressed="false" tabindex="0">♡</span><?php endif; ?>
-                        </div>
-                    </div>
-
-                </article>
-
-            <?php endforeach; ?>
+                // A "szép" kártya markupja az ab-esemenyek közös renderelőjéből jön
+                // (egyetlen forrás: includes/card-renderer.php) – a widget csak a beállításokat mappeli.
+                echo abe_render_event_card((int) $event->ID, [
+                    'btn_label'           => $s['btn_label'] ?? 'Részletek',
+                    'featured'            => $is_feat,
+                    'img_fit'             => $img_fit,
+                    'date_badge_position' => $date_pos,
+                    'show_time'           => $show_time,
+                    'show_location'       => $show_loc,
+                    'show_type_badge'     => $show_tb,
+                    'show_date_badge'     => $show_db,
+                    'show_save'           => $show_save,
+                    'show_excerpt'        => $is_feat ? $show_exc_f : $show_exc_s,
+                    'excerpt_words'       => $is_feat ? $exc_w_f : $exc_w_s,
+                    'accent_color'        => $accent,
+                    'eager'               => ($i < 2),
+                ]);
+            endforeach; ?>
 
             </div>
 

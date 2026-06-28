@@ -4,7 +4,7 @@
  * Plugin URI:   https://aktivbalaton.hu
  * Description:  Öt Elementor widget: Hero Statisztikák, Esemény Grid, Kategória Pillek, Kereső, Gyors linkek.
  *               Önálló plugin – nem függ a sablontól, child theme nem szükséges.
- * Version:      2.12.0
+ * Version:      2.13.0
  * Author:       AktívBalaton
  * Author URI:   https://aktivbalaton.hu
  * Text Domain:  ab-widgets
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('AB_WIDGETS_VERSION', '2.12.0');
+define('AB_WIDGETS_VERSION', '2.13.0');
 define('AB_WIDGETS_PATH',    plugin_dir_path(__FILE__));
 define('AB_WIDGETS_URL',     plugin_dir_url(__FILE__));
 
@@ -60,6 +60,19 @@ add_action('plugins_loaded', function () {
     // CSS + JS betöltése frontenden
     add_action('elementor/frontend/after_enqueue_styles', 'ab_widgets_enqueue_assets');
 });
+
+// Kártya CSS (ab-widgets.css) REGISZTRÁLÁSA korán, hogy más plugin (ab-esemenyek
+// ab-racs shortcode-elrendezés) is be tudja tölteni a "szép" .ab-event-card stílust
+// Elementortól függetlenül. Itt csak regisztrálunk; az Elementor-oldali enqueue marad.
+add_action('wp_enqueue_scripts', 'ab_widgets_register_card_style', 5);
+function ab_widgets_register_card_style(): void {
+    wp_register_style(
+        'ab-widgets',
+        AB_WIDGETS_URL . 'assets/css/ab-widgets.css',
+        [],
+        AB_WIDGETS_VERSION
+    );
+}
 
 // Kedvencek (szív) JS – UNIVERZÁLIS betöltés: MINDEN frontend oldalon, az Elementortól
 // függetlenül, mert a .ab-card-save szívek máshol is megjelenhetnek (pl. naptár oldal).
