@@ -316,6 +316,15 @@
 
 .ab-card-loc { color: var(--ab-grid-accent); font-weight: 500; }
 
+/* Film "több időpont · több mozi" jelzés – narancs akcentus, saját sorban.
+   Világos és sötét kártyatesten is olvasható. */
+.ab-card-film-tobb {
+    flex-basis: 100%;
+    font-size: 12px;
+    font-weight: 600;
+    color: #E8943A;
+}
+
 .ab-card-title {
     font-family: 'Cormorant Garamond', Georgia, serif;
     font-size: 18px;
